@@ -1,16 +1,36 @@
-`timescale 1ns / 1ps
+module prescaler #(
+    parameter MODULO = 100000000,
+    parameter W = 27
+    
+)
+(
+    input CLK,
+    input CE,
+    output CEO
+);
 
+reg [W-1:0] Q = 0;
 
+always @(posedge CLK)
+    if (CE)
+        if (Q == MODULO-1)
+            Q <= {W{1'd0}};
+        else
+            Q <= Q+1;     
+
+    assign CEO = CE & (Q == MODULO-1);
+    
+endmodule
 
 module up_cnt_mod #(  
-    parameter MODULO = 3200,
-    parameter W = 12 
+    parameter MODULO = 10,
+    parameter W = 4 
 )
 (
     input               CLK,
     input               CE,
     input               CLR,
-    output reg [W-1:0]  Q = {W{1'd0}},
+    output reg [W-1:0]  Q = 0,
     output              CO
 );
 

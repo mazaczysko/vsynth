@@ -5,9 +5,10 @@ module nco (
 );
 
 wire trig_sample;
-wire [27:0] Q;
 
-up_cnt_mod #(
+wire [15:0] step;
+
+prescaler #(
 
 	.MODULO(100000000),
 	.W(27)
@@ -16,18 +17,16 @@ test_prescaler
 (
 	.CLK(CLK),
 	.CE(1'd1),
-	.CLR(1'd0),
-	.Q(Q),
-	.CO(trig_sample)
+	.CEO(trig_sample)
 );
 
 step_size_rom rom1 (
 	.CLK(CLK),
 	.CE(trig_sample),
 	.A(NOTE_NUM),
-	.D(OUTPUT)
+	.D(step)
 );
-/*
+
 sample_rom rom2 (
 	.CLK(CLK),
 	.CE(trig_sample),
@@ -35,5 +34,5 @@ sample_rom rom2 (
 	.A1(7'd0),
 	.D(OUTPUT)
 );
-*/
+
 endmodule
