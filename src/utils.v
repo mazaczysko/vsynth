@@ -10,7 +10,7 @@ module up_cnt_mod #(
     input               CLK,
     input               CE,
     input               CLR,
-    output reg [W-1:0]  Q,
+    output reg [W-1:0]  Q = {W{1'd0}},
     output              CO
 );
 
@@ -48,5 +48,21 @@ always @(posedge CLK)
         else
             Q <= {Q[6:0],D};
 
+
+endmodule
+
+module register #(
+    parameter W=8 
+)
+(
+    input               CLK,
+    input               CE,
+    input [W-1:0]       D,
+    output reg [W-1:0]  Q = 0
+);
+
+always @(posedge CLK)
+    if(CE)
+        Q <= D;
 
 endmodule
