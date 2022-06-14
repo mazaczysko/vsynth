@@ -53,12 +53,21 @@ step_size_rom rom1 (
 	.D(step)
 );
 
+phase2sample sampler( 
+    .CLK(CLK),
+    .CE(CE),
+    .PHASE(phase_reg_out[15:9]),
+    .PROGRAM(PROGRAM),
+    .SAMPLE(sample_out)
+);
+
+/*
 sample_rom rom2 (
 	.CLK(CLK),
-	.CE(trig_sample),
-	.A0(phase_reg_out[15:9]),
+	.CE(CE),
+	.A0(phase_reg_out[15:9]), //phase_reg_out[15:9]
 	.A1(PROGRAM),
 	.D(sample_out)
 );
-
+*/
 endmodule
