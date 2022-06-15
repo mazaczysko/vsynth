@@ -12,7 +12,7 @@ wire [7:0] SAMPLE_OUT;
 initial begin
     CLK = 0;
     CE = 1;
-    NOTE_NUM = 50;
+    NOTE_NUM = 0;
     NOTE_VEL = 127;
     PROGRAM = 1;
 end

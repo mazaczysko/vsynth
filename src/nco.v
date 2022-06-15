@@ -4,7 +4,8 @@ module nco (
 	input [6:0] NOTE_NUM,
 	input [6:0] NOTE_VEL,
 	input [6:0] PROGRAM,
-	output[7:0] SAMPLE_OUT
+	output[7:0] SAMPLE_OUT,
+	output TRIG
 );
 
 
@@ -14,6 +15,7 @@ wire [7:0] sample;
 
 assign SAMPLE_OUT = sample_out;
 assign LED = sample_out;
+assign TRIG = trig_sample;
 
 wire [15:0] step;           //input of phase adder
 wire [15:0] phase_add_out;  //output of phase adder
@@ -59,7 +61,7 @@ phase2sample sampler(
     .CE(CE),
     .PHASE(phase_reg_out[15:9]),
     .PROGRAM(PROGRAM),
-    .SAMPLE(sample)
+    .SAMPLE(sample_out)
 );
 
 
@@ -68,7 +70,7 @@ volume_rom vel_rom (
 	.CE(CE),
 	.SAMPLE(sample),
 	.VEL(NOTE_VEL),
-	.SAMPLE_OUT(sample_out)
+	.SAMPLE_OUT(sample) //Disabled
 );
 
 
