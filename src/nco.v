@@ -1,15 +1,16 @@
 module nco (
 	input CLK,
+	input CE,
 	input [6:0] NOTE_NUM,
+	input [6:0] NOTE_VEL,
 	input [6:0] PROGRAM,
-	output[7:0] LED,
 	output[7:0] SAMPLE_OUT
 );
 
-parameter CE = 1;
 
 wire trig_sample;
 wire [7:0] sample_out;
+wire [7:0] sample;
 
 assign SAMPLE_OUT = sample_out;
 assign LED = sample_out;
@@ -46,7 +47,7 @@ phase_reg
 );
 
 
-step_size_rom rom1 (
+step_size_rom step_rom (
 	.CLK(CLK),
 	.CE(CE),
 	.A(NOTE_NUM),
@@ -58,16 +59,17 @@ phase2sample sampler(
     .CE(CE),
     .PHASE(phase_reg_out[15:9]),
     .PROGRAM(PROGRAM),
-    .SAMPLE(sample_out)
+    .SAMPLE(sample)
 );
 
-/*
-sample_rom rom2 (
+
+volume_rom vel_rom (
 	.CLK(CLK),
 	.CE(CE),
-	.A0(phase_reg_out[15:9]), //phase_reg_out[15:9]
-	.A1(PROGRAM),
-	.D(sample_out)
+	.SAMPLE(sample),
+	.VEL(NOTE_VEL),
+	.SAMPLE_OUT(sample_out)
 );
-*/
+
+
 endmodule
