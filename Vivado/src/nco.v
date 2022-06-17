@@ -24,10 +24,10 @@ wire [15:0] phase_reg_out;  //input of phase adder
 assign phase_add_out = phase_reg_out + step;
 
 
-//28kHz sample rate @ 100MHz CLK
+//32kHz sample rate @ 100MHz CLK
 prescaler #(
 
-	.MODULO(3571),
+	.MODULO(3125),
 	.W(12)
 )
 sample_rate
@@ -61,7 +61,7 @@ phase2sample sampler(
     .CE(CE),
     .PHASE(phase_reg_out[15:9]),
     .PROGRAM(PROGRAM),
-    .SAMPLE(sample_out)
+    .SAMPLE(sample)
 );
 
 
@@ -70,7 +70,7 @@ volume_rom vel_rom (
 	.CE(CE),
 	.SAMPLE(sample),
 	.VEL(NOTE_VEL),
-	.SAMPLE_OUT(sample) //Disabled
+	.SAMPLE_OUT(sample_out)
 );
 
 

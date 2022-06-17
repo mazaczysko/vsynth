@@ -1,4 +1,4 @@
-//64 Samples in wave and wave mirroring
+//64 Samples per wave and wave mirroring
 
 module phase2sample ( 
     input CLK,
