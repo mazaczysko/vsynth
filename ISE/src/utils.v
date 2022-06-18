@@ -64,9 +64,9 @@ always @(posedge CLK)
         Q <= {W{1'd0}};
     else if(CE)
         if( DIR )
-            Q <= {D,Q[7:1]};
+            Q <= {D,Q[W-1:1]};
         else
-            Q <= {Q[6:0],D};
+            Q <= {Q[W-2:0],D};
 
 
 endmodule
