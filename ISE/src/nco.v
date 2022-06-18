@@ -47,12 +47,18 @@ phase_reg
     .Q(phase_reg_out)
 );
 
-//Skip step_size_rom (ISE error)
+step_size_rom step_rom (
+	.CLK(CLK),
+	.CE(CE),
+	.A(NOTE_NUM),
+	.D(step)
+);
 
 phase2sample sampler( 
     .CLK(CLK),
     .CE(trig_sample),
     .PHASE(phase_reg_out[15:9]),
+	.PROGRAM(NOTE_NUM),
     .SAMPLE_OUT(sample_out)
 );
 
