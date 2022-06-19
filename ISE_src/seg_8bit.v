@@ -1,5 +1,6 @@
 module seg_8bit (
 	input CLK,
+	input CE,
 	input [7:0] BIN_IN,
 	output reg [7:0] SEG = 255,
 	output reg [3:0] AN

@@ -4,7 +4,9 @@ module vsynth_test (
 	output [2:0] NOTE,
 	output [2:0] VEL,
 	output [1:0] PROG,
-	output [7:0] SAMPLE_OUT
+	output [7:0] SAMPLE_OUT,
+	output [7:0] SEG,
+	output [3:0] AN
 );
 
 wire dv;
@@ -38,7 +40,6 @@ midi midi1(
 	.PROGRAM(PROGRAM)
 );
 
-
 nco osc (
 	.CLK(CLK),
 	.CE(1'd1),
@@ -46,6 +47,14 @@ nco osc (
 	.NOTE_VEL(NOTE_VEL),
 	.PROGRAM(PROGRAM),
 	.SAMPLE_OUT(SAMPLE_OUT)
+);
+
+seg_8bit disp (
+	.CLK(CLK),
+	.CE(1'd1),
+	.BIN_IN(PROGRAM),
+	.SEG(SEG),
+	.AN(AN)
 );
 
 endmodule
