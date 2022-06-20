@@ -17,7 +17,7 @@ wire [15:0] sample_vel;
 
 assign sample_vel = sample_out * NOTE_VEL;
 
-assign SAMPLE_OUT = sample_vel[15:8];
+assign SAMPLE_OUT = sample_vel[14:7];
 
 //assign SAMPLE_OUT = sample_out;
 
