@@ -1,9 +1,8 @@
 module vsynth_test (
 	input CLK,
 	input DI,
-	output [2:0] NOTE,
-	output [2:0] VEL,
-	output [1:0] PROG,
+	input	 [3:0] CHANNEL,
+	output [3:0] CHANNEL_LED,
 	output [7:0] SAMPLE_OUT,
 	output [7:0] SEG,
 	output [3:0] AN
@@ -16,9 +15,7 @@ wire [6:0] NOTE_NUM;
 wire [6:0] NOTE_VEL;
 wire [6:0] PROGRAM;
 
-assign NOTE = NOTE_NUM[2:0];
-assign VEL = NOTE_VEL[2:0];
-assign PROG = PROGRAM[1:0];
+assign CHANNEL_LED = CHANNEL;
 
 uart_rx uart (
 	.CLK(CLK),
@@ -33,6 +30,7 @@ midi midi1(
 	.CLK(CLK),
 	.CE(1'd1),
 	.RST(1'd0),
+	.CHANNEL(CHANNEL),
 	.DATA(uart_out),
 	.DV(dv),
 	.NOTE_NUM(NOTE_NUM),

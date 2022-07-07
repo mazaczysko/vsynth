@@ -1,10 +1,11 @@
 module midi_fsm(
-    input 			CLK,
-	input			CE,
-	input 			RST, 
-	input [7:0]		DATA,
+   input 			CLK,
+	input				CE,
+	input 			RST,
+	input   [3:0]  CHANNEL,
+	input   [7:0]	DATA,
 	input 			DV,
-	output  [2:0]  	STATUS
+	output  [2:0] 	STATUS
 );
     
 //FSM States
@@ -16,6 +17,12 @@ parameter RECV_VEL = 3'b100;
 parameter HANDLE_NOTE = 3'b101;
 parameter RECV_PROG = 3'b110;
 parameter HANDLE_PROG = 3'b111;
+
+//MIDI status codes
+parameter S_NOTE_ON = 4'h9;
+parameter S_NOTE_OFF = 4'h8;
+parameter S_PROGRAM = 4'hc;
+parameter S_RESET = 8'hff;
     
 reg [2:0] state = RESET;
 assign STATUS = state;
@@ -38,11 +45,11 @@ always @(posedge CLK)
 					state <= RECV;
 
 			DISPATCH:
-				if (DATA == 8'h90 | DATA == 8'h80)
+				if (DATA == {S_NOTE_ON, CHANNEL} | DATA == {S_NOTE_OFF, CHANNEL})
 					state <= RECV_NUM;
-				else if (DATA == 8'hc0)
+				else if (DATA == {S_PROGRAM, CHANNEL})
 					state <= RECV_PROG;
-				else if (DATA == 8'hff)
+				else if (DATA == S_RESET)
 					state <= RESET;
 				else
 					state <= RECV;
