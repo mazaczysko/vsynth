@@ -33,8 +33,8 @@ midi midi1(
 	.CLK(CLK),
 	.CE(1'd1),
 	.RST(1'd0),
-	.data(uart_out),
-	.dv(dv),
+	.DATA(uart_out),
+	.DV(dv),
 	.NOTE_NUM(NOTE_NUM),
 	.NOTE_VEL(NOTE_VEL),
 	.PROGRAM(PROGRAM)

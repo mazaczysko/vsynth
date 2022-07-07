@@ -2,8 +2,8 @@ module midi (
 	input 			CLK,
 	input 			CE,
 	input 			RST,
-	input  [7:0]	data,
-	input 			dv,
+	input  [7:0]	DATA,
+	input 			DV,
 	output [6:0] 	NOTE_NUM,
 	output [6:0] 	NOTE_VEL,
 	output [6:0] 	PROGRAM
@@ -28,18 +28,28 @@ wire [6:0] note_vel_or_off;
 wire [7:0] current_status;
 
 wire fsm_reset;
+wire fsm_dispatch;
+wire fsm_handle_prog;
+wire fsm_handle_note_nand_note_off;
+wire fsm_recv_num_and_dv;
+wire fsm_recv_vel_and_dv;
+wire fsm_recv_prog_and_dv;
+wire reg_clr;
 
 assign fsm_reset = fsm_state == RESET;
-
-//if current_status == NOTE_OFF and received and current played notes are the same -> set vel to 0
-//assign note_vel_or_off = current_status == 8'h80 & NOTE_NUM == note_num_buf_out ? 7'd0 : note_vel_buf_out;
+assign fsm_dispatch = fsm_state == DISPATCH;
+assign fsm_handle_prog = fsm_state == HANDLE_PROG;
+assign fsm_handle_note_nand_note_off = fsm_state == HANDLE_NOTE & ~(current_status == 8'h80);
+assign fsm_recv_num_and_dv = fsm_state == RECV_NUM & DV;
+assign fsm_recv_vel_and_dv = fsm_state == RECV_VEL & DV;
+assign fsm_recv_prog_and_dv = fsm_state == RECV_PROG & DV;
+assign reg_clr = RST | fsm_reset;
 
 wire note_off;
-
 assign note_off = (fsm_state == HANDLE_NOTE & current_status == 8'h80 & NOTE_NUM == note_num_buf_out);
 
-//Input buffers
 
+//Input buffers
 
 register_clr #(
 	.W(8)
@@ -47,9 +57,9 @@ register_clr #(
 status_byte
 (
 	.CLK(CLK),
-	.CE(fsm_state == DISPATCH),
-	.CLR(RST | fsm_reset),
-	.D(data),
+	.CE(fsm_dispatch),
+	.CLR(reg_clr),
+	.D(DATA),
 	.Q(current_status)
 );
 
@@ -60,8 +70,8 @@ register_clr #(
 NOTE_NUM_out
 (
 	.CLK(CLK),
-	.CE(fsm_state == HANDLE_NOTE & ~(current_status == 8'h80)),
-	.CLR(RST | fsm_reset),
+	.CE(fsm_handle_note_nand_note_off),
+	.CLR(reg_clr),
 	.D(note_num_buf_out),
 	.Q(NOTE_NUM)
 );
@@ -72,8 +82,8 @@ register_clr #(
 NOTE_VEL_out
 (
 	.CLK(CLK),
-	.CE(fsm_state == HANDLE_NOTE & ~(current_status == 8'h80)),
-	.CLR(RST | fsm_reset | note_off),
+	.CE(fsm_handle_note_nand_note_off),
+	.CLR(reg_clr | note_off),
 	.D(note_vel_buf_out),
 	.Q(NOTE_VEL)
 );
@@ -84,8 +94,8 @@ register_clr #(
 PROGRAM_out
 (
 	.CLK(CLK),
-	.CE(fsm_state == HANDLE_PROG),
-	.CLR(RST | fsm_reset),
+	.CE(fsm_handle_prog),
+	.CLR(reg_clr),
 	.D(program_buf_out),
 	.Q(PROGRAM)
 );
@@ -97,9 +107,9 @@ register_clr #(
 NOTE_NUM_buf
 (
 	.CLK(CLK),
-	.CE(fsm_state == RECV_NUM & dv),
-	.CLR(RST | fsm_reset),
-	.D(data[6:0]),
+	.CE(fsm_recv_num_and_dv),
+	.CLR(reg_clr),
+	.D(DATA[6:0]),
 	.Q(note_num_buf_out)
 );
 
@@ -109,9 +119,9 @@ register_clr #(
 NOTE_VEL_buf
 (
 	.CLK(CLK),
-	.CE(fsm_state == RECV_VEL & dv),
-	.CLR(RST | fsm_reset),
-	.D(data[6:0]),
+	.CE(fsm_recv_vel_and_dv),
+	.CLR(reg_clr),
+	.D(DATA[6:0]),
 	.Q(note_vel_buf_out)
 );
 
@@ -121,9 +131,9 @@ register_clr #(
 PROGRAM_buf
 (
 	.CLK(CLK),
-	.CE(fsm_state == RECV_PROG & dv),
-	.CLR(RST | fsm_reset),
-	.D(data[6:0]),
+	.CE(fsm_recv_prog_and_dv),
+	.CLR(reg_clr),
+	.D(DATA[6:0]),
 	.Q(program_buf_out)
 );
 
@@ -132,11 +142,10 @@ midi_fsm fsm(
 	.CLK(CLK),
 	.CE(CE),
 	.RST(RST),
-	.DATA(data),
-	.DV(dv),
+	.DATA(DATA),
+	.DV(DV),
 	.STATUS(fsm_state)
 );
 
-
-
 endmodule
+
