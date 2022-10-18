@@ -1,7 +1,8 @@
 module nco (
 	input CLK,
 	input CE,
-	input [6:0] NOTE_NUM,
+	input TRIG_SAMPLE,
+	input [15:0] STEP, //input of phase adder
 	input [6:0] NOTE_VEL,
 	input [6:0] PROGRAM,
 	output[7:0] SAMPLE_OUT
@@ -21,12 +22,10 @@ assign SAMPLE_OUT = sample_vel[14:7];
 
 //assign SAMPLE_OUT = sample_out;
 
-wire [15:0] step;           //input of phase adder
 wire [15:0] phase_add_out;  //output of phase adder
 wire [15:0] phase_reg_out;  //input of phase adder
 
 assign phase_add_out = phase_reg_out + step;
-//assign phase_add_out = phase_reg_out + {16'h385};
 
 
 //32kHz sample rate @ 100MHz CLK
@@ -48,17 +47,11 @@ register #(
 phase_reg
 (
     .CLK(CLK),
-    .CE(trig_sample),
+    .CE(TRIG_SAMPLE),
     .D(phase_add_out),
     .Q(phase_reg_out)
 );
 
-step_size_rom step_rom (
-	.CLK(CLK),
-	.CE(CE),
-	.A(NOTE_NUM),
-	.D(step)
-);
 
 phase2sample sampler( 
     .CLK(CLK),

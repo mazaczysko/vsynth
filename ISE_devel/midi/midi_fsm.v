@@ -1,8 +1,8 @@
 module midi_fsm(
    input 			CLK,
-	input				CE,
+	input			CE,
 	input 			RST,
-	input   [3:0]  CHANNEL,
+	input   [3:0]   CHANNEL,
 	input   [7:0]	DATA,
 	input 			DV,
 	output  [2:0] 	STATUS
