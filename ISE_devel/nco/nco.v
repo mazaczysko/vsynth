@@ -1,11 +1,12 @@
 module nco (
 	input CLK,
 	input CE,
-	input TRIG_SAMPLE,
-	input [15:0] STEP, //input of phase adder
+	input TRIG_READ,
+	input [15:0] STEP_SIZE, //input of phase adder
 	input [6:0] NOTE_VEL,
-	input [6:0] PROGRAM,
-	output[7:0] SAMPLE_OUT
+	input [7:0] PROG_SAMPLE,
+	output [7:0] PHASE,
+	output reg [7:0] SAMPLE_OUT
 );
 
 //parameter CE = 1;
@@ -16,9 +17,11 @@ wire [7:0] sample;
 
 wire [15:0] sample_vel;
 
-assign sample_vel = sample_out * NOTE_VEL;
+assign sample_vel = PROG_SAMPLE * NOTE_VEL;
 
 assign SAMPLE_OUT = sample_vel[14:7];
+
+assign PHASE  = phase_reg_out[15:9];
 
 //assign SAMPLE_OUT = sample_out;
 
@@ -26,20 +29,6 @@ wire [15:0] phase_add_out;  //output of phase adder
 wire [15:0] phase_reg_out;  //input of phase adder
 
 assign phase_add_out = phase_reg_out + step;
-
-
-//32kHz sample rate @ 100MHz CLK
-prescaler #(
-
-	.MODULO(3125),
-	.W(12)
-)
-sample_rate
-(
-	.CLK(CLK),
-	.CE(1'd1),
-	.CEO(trig_sample)
-);
 
 register #(
     .W(16)
@@ -51,19 +40,6 @@ phase_reg
     .D(phase_add_out),
     .Q(phase_reg_out)
 );
-
-
-phase2sample sampler( 
-    .CLK(CLK),
-    .CE(trig_sample),
-    .PHASE(phase_reg_out[15:9]),
-	.PROGRAM(PROGRAM),
-    .SAMPLE_OUT(sample_out)
-);
-
-
-
-//Skip volume_rom (ISE error)
 
 
 endmodule
