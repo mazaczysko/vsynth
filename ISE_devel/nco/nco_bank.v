@@ -14,48 +14,72 @@ module nco_bank (
     output [7:0] SAMPLE_SUM_OUT
 );
 
-wire trig_read;
+wire trig;
 wire [15:0] step_size;
-wire [7:0] prog_sample;
-wire [3:0] trig_read_fifo_out;
+wire [7:0] sampler_out;
+wire [7:0] trig_fifo_out;
 wire [6:0] note_num_mux_out;
-
-
-wire trig_read_0, trig_read_1, trig_read_2, trig_read_3;
-
-assign trig_read_0 = trig_read_fifo_out[3];
-assign trig_read_1 = trig_read_fifo_out[2];
-assign trig_read_2 = trig_read_fifo_out[1];
-assign trig_read_3 = trig_read_fifo_out[0]; 
+wire [6:0] phase_mux_out;
 
 wire [6:0] phase_0;
 wire [6:0] phase_1;
 wire [6:0] phase_2;
 wire [6:0] phase_3;
 
+wire [8:0] trig_fifo = {trig, trig_fifo_out};
+
+wire note_num_mux_ce;
+wire [3:0] note_num_mux_sel;
+wire step_rom_ce;
+wire trig_read_0, trig_read_1, trig_read_2, trig_read_3;
+wire phase_mux_ce;
+wire [3:0] phase_mux_sel;
+wire sampler_ce;
+wire trig_sample_0, trig_sample_1, trig_sample_2, trig_sample_3;
+
+assign note_num_mux_ce = |trig_fifo[8:5];
+assign note_num_mux_sel = trig_fifo[8:5];
+assign step_rom_ce = |trig_fifo[7:4];
+assign trig_read_0 = trig_fifo[6];
+assign trig_read_1 = trig_fifo[5];
+assign trig_read_2 = trig_fifo[4];
+assign trig_read_3 = trig_fifo[3]; 
+assign phase_mux_ce = |trig_fifo[5:2];
+assign phase_mux_sel = trig_fifo[5:2];
+assign sampler_ce = |trig_fifo[4:1];
+assign trig_sample_0 = trig_fifo[3];
+assign trig_sample_1 = trig_fifo[2];
+assign trig_sample_2 = trig_fifo[1];
+assign trig_sample_3 = trig_fifo[0];
+
+wire [7:0] sample_0;
+wire [7:0] sample_1;
+wire [7:0] sample_2;
+wire [7:0] sample_3;
 
 //32kHz sample rate @ 100MHz CLK
 prescaler #(
-	.MODULO(3125),
+	//.MODULO(3125),
+	.MODULO(30),
 	.W(12)
 )
 sample_rate
 (
 	.CLK(CLK),
 	.CE(CE),
-	.CEO(trig_read)
+	.CEO(trig)
 );
 
 shift_reg_right #(
-    .W(5)
+    .W(8)
 )
-trig_read_fifo
+trig_fifo_reg
 (
     .CLK(CLK),
     .CE(CE),
     .CLR(RST),
-    .D(trig_read),
-    .Q(trig_read_fifo_out)
+    .D(trig),
+    .Q(trig_fifo_out)
 );
 
 mux_4_1_hot1 #(
@@ -64,8 +88,8 @@ mux_4_1_hot1 #(
 note_num_mux
 (
     .CLK(CLK),
-    .CE(CE),
-    .SEL({trig_read,trig_read_fifo_out[4:2]}), //1 CLK before memory address read (synchronous mux)
+    .CE(note_num_mux_ce),
+    .SEL(note_num_mux_sel), 
     .IN_0(NOTE_NUM_0),
     .IN_1(NOTE_NUM_1),
     .IN_2(NOTE_NUM_2),
@@ -75,7 +99,7 @@ note_num_mux
 
 step_size_rom step_rom (
 	.CLK(CLK),
-	.CE(trig_read_fifo_out[4:1]), //1 CLK after MUX
+	.CE(step_rom_ce),
 	.A(note_num_mux_out),
 	.D(step_size)
 );
@@ -86,8 +110,8 @@ mux_4_1_hot1 #(
 phase_mux
 (
     .CLK(CLK),
-    .CE(CE),
-    .SEL({trig_read,trig_read_fifo_out[4:2]}), //1 CLK before memory address read (synchronous mux)
+    .CE(phase_mux_ce),
+    .SEL(phase_mux_sel),
     .IN_0(phase_0),
     .IN_1(phase_1),
     .IN_2(phase_2),
@@ -97,10 +121,10 @@ phase_mux
 
 phase2sample sampler (
     .CLK(CLK),
-    .CE(trig_read_fifo_out[4:1]), 
+    .CE(sampler_ce), 
     .PHASE(phase_mux_out),
     .PROGRAM(PROGRAM),
-    .SAMPLE_OUT(prog_sample)
+    .SAMPLE_OUT(sampler_out)
 );
 
 nco nco_0 (
@@ -109,7 +133,8 @@ nco nco_0 (
     .TRIG_READ(trig_read_0),
     .STEP_SIZE(step_size),
     .NOTE_VEL(NOTE_VEL_0),
-    .PROG_SAMPLE(prog_sample),
+    .TRIG_SAMPLE(trig_sample_0),
+    .PROG_SAMPLE(sampler_out),
     .PHASE(phase_0),
     .SAMPLE_OUT(sample_0)
 );
@@ -120,7 +145,8 @@ nco nco_1 (
     .TRIG_READ(trig_read_1),
     .STEP_SIZE(step_size),
     .NOTE_VEL(NOTE_VEL_1),
-    .PROG_SAMPLE(prog_sample),
+    .TRIG_SAMPLE(trig_sample_1),    
+    .PROG_SAMPLE(sampler_out),
     .PHASE(phase_1),
     .SAMPLE_OUT(sample_1)
 );
@@ -131,7 +157,8 @@ nco nco_2 (
     .TRIG_READ(trig_read_2),
     .STEP_SIZE(step_size),
     .NOTE_VEL(NOTE_VEL_2),
-    .PROG_SAMPLE(prog_sample),
+    .TRIG_SAMPLE(trig_sample_2),
+    .PROG_SAMPLE(sampler_out),
     .PHASE(phase_2),
     .SAMPLE_OUT(sample_2)
 );
@@ -142,7 +169,8 @@ nco nco_3 (
     .TRIG_READ(trig_read_3),
     .STEP_SIZE(step_size),
     .NOTE_VEL(NOTE_VEL_3),
-    .PROG_SAMPLE(prog_sample),
+    .TRIG_SAMPLE(trig_sample_3),
+    .PROG_SAMPLE(sampler_out),
     .PHASE(phase_3),
     .SAMPLE_OUT(sample_3)
 );

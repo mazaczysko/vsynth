@@ -29,7 +29,7 @@ sample_rom rom (
 	.CLK(CLK),
 	.CE(CE),
 	.SAMPLE(phase), //phase_reg_out[15:9]
-	.PROG(PROGRAM),
+	.PROG({1'd0,PROGRAM}), //IMPORTANT TO FIX!!!!!!
 	.D(sample)
 );
 
