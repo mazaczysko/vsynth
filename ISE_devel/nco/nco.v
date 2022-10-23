@@ -6,7 +6,7 @@ module nco (
 	input [6:0] NOTE_VEL,
 	input TRIG_SAMPLE,
 	input [7:0] PROG_SAMPLE,
-	output [7:0] PHASE,
+	output [6:0] PHASE,
 	output [7:0] SAMPLE_OUT
 );
 

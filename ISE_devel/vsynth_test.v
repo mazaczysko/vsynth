@@ -59,8 +59,6 @@ nco_bank voice (
 	.CE(1'd1),
 	.RST(1'b0),
 	.PROGRAM(PROGRAM),
-	.NOTE_NUM(NOTE_NUM),
-	.NOTE_VEL(NOTE_VEL),
 	.NOTE_NUM_0(note_num_0),
     .NOTE_NUM_1(note_num_1),
     .NOTE_NUM_2(note_num_2),

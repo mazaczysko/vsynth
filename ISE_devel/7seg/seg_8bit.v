@@ -6,7 +6,7 @@ module seg_8bit (
 	output reg [3:0] AN
 );
 
-wire [2:0] Q;
+wire [1:0] Q;
 wire CEO;
 
 
@@ -27,6 +27,7 @@ cnt
 	.CE(CEO),
 	.CLR(1'd0),
 	.Q(Q)
+	//CO unconnected 
 );
 
 prescaler #(

@@ -21,7 +21,7 @@ parameter STOP = 3'b100;
 
 wire [2:0] status;
 wire [CLKS_PER_BIT_W-1:0] baud_cnt;
-wire [3:0] bit_cnt;
+wire [2:0] bit_cnt;
 wire HB, BD, LB;
 wire baud_reset;
 reg data;
