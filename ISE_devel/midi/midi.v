@@ -57,7 +57,7 @@ assign fsm_recv_vel_and_dv = fsm_state == RECV_VEL & DV;
 assign fsm_recv_prog_and_dv = fsm_state == RECV_PROG & DV;
 assign reg_clr = RST | fsm_reset;
 
-assign note_off = fsm_state == HANDLE_NOTE & current_status == {S_NOTE_OFF, CHANNEL};
+assign note_off = fsm_state == HANDLE_NOTE & (current_status == {S_NOTE_OFF, CHANNEL} || (current_status == {S_NOTE_ON, CHANNEL} && ~|note_vel_buf_out));
 assign note_on = fsm_state == HANDLE_NOTE & current_status == {S_NOTE_ON, CHANNEL};
 
 //Sync output
