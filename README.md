@@ -16,7 +16,7 @@ Design assumtions and features to implement:
 
 ## Hardware
 For now all of the tests are running on Digilent Nexys 3 board with Xilinx Spartan-6 XC6LX16-CSG324 with homemade DAC and MIDI2UART extension board.
-This forces me to use old and unsupported ISE Design Suite which sometimes requires use of _not good, but working_ coding techniques. The code is written in `verilog` to be possibly most portable and efficient. Modules tested and implemented in hardware are placed in ``ISE_src`` directory.
+The code is written in `verilog` to be possibly most portable and efficient.
 
 <br>*Digilent Nexys 3 with DAC and MIDI interface:*<br>
 
