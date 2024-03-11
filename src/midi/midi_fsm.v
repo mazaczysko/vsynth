@@ -1,43 +1,43 @@
 module midi_fsm(
-   input 			CLK,
-	input			CE,
-	input 			RST,
-	input   [3:0]   CHANNEL,
-	input   [7:0]	DATA,
-	input 			DV,
-	output  [2:0] 	STATUS
+   input 			clk		,
+	input			ce		,
+	input 			rst		,
+	input   [3:0]   channel	,	
+	input   [7:0]	data	,
+	input 			dv		,
+	output  [2:0] 	status
 );
     
 //FSM States
-parameter RESET = 3'b000;
-parameter RECV = 3'b001;
-parameter DISPATCH = 3'b010;
-parameter RECV_NUM = 3'b011;
-parameter RECV_VEL = 3'b100;
+parameter RESET 	  = 3'b000;
+parameter RECV 		  = 3'b001;
+parameter DISPATCH 	  = 3'b010;
+parameter RECV_NUM 	  = 3'b011;
+parameter RECV_VEL 	  = 3'b100;
 parameter HANDLE_NOTE = 3'b101;
-parameter RECV_PROG = 3'b110;
+parameter RECV_PROG   = 3'b110;
 parameter HANDLE_PROG = 3'b111;
 
 //MIDI status codes
-parameter S_NOTE_ON = 4'h9;
+parameter S_NOTE_ON  = 4'h9;
 parameter S_NOTE_OFF = 4'h8;
-parameter S_PROGRAM = 4'hc;
-parameter S_RESET = 8'hff;
+parameter S_PROGRAM  = 4'hc;
+parameter S_RESET    = 8'hff;
     
 reg [2:0] state = RESET;
-assign STATUS = state;
+assign status = state;
 
-always @(posedge CLK)
-	if (RST)
+always @(posedge clk)
+	if (rst)
 		state <= RESET;
-	else if (CE)
+	else if (ce)
 		case (state)
 			RESET:
 				state <= RECV;
 
 			RECV:
-				if (DV)
-					if (DATA[7]) //Receive status byte
+				if (dv)
+					if (data[7]) //Receive status byte
 						state <= DISPATCH;
 					else
 						state <= RECV;
@@ -45,18 +45,18 @@ always @(posedge CLK)
 					state <= RECV;
 
 			DISPATCH:
-				if (DATA == {S_NOTE_ON, CHANNEL} | DATA == {S_NOTE_OFF, CHANNEL})
+				if (data == {S_NOTE_ON, channel} | data == {S_NOTE_OFF, channel})
 					state <= RECV_NUM;
-				else if (DATA == {S_PROGRAM, CHANNEL})
+				else if (data == {S_PROGRAM, channel})
 					state <= RECV_PROG;
-				else if (DATA == S_RESET)
+				else if (data == S_RESET)
 					state <= RESET;
 				else
 					state <= RECV;
 			
 			RECV_NUM:
-				if (DV)
-					if (DATA[7]) //Receive status byte
+				if (dv)
+					if (data[7]) //Receive status byte
 						state <= DISPATCH;
 					else
 						state <= RECV_VEL;
@@ -64,8 +64,8 @@ always @(posedge CLK)
 					state <= RECV_NUM;
 
 			RECV_VEL:
-				if (DV)
-					if (DATA[7]) //Receive status byte
+				if (dv)
+					if (data[7]) //Receive status byte
 						state <= DISPATCH;
 					else 
 						state <= HANDLE_NOTE;
@@ -76,8 +76,8 @@ always @(posedge CLK)
 				state <= RECV;
 
 			RECV_PROG:
-				if (DV)
-					if (DATA[7]) //Receive status byte
+				if (dv)
+					if (data[7]) //Receive status byte
 						state <= DISPATCH;
 					else 
 						state <= HANDLE_PROG;

@@ -1,15 +1,19 @@
 module sample_rom (
-	input CLK,
-	input CE,
-	input [5:0] SAMPLE,
-	input [7:0] PROG,
-	output reg [7:0] D
+	input 		     clk	,
+	input 			 ce		,
+	input      [5:0] sample	,
+	input 	   [7:0] prog	,
+	output reg [7:0] d
 );
 
 reg [7:0] sample_rom [255:0][63:0];
    
    	//initial
 	//	$readmemh("sample_rom.mem", sample_rom );
+
+always @(posedge clk)
+	if (ce)
+    	d <= sample_rom[prog][sample];
 
 initial begin
 	sample_rom[0][0] = 8'd131;
@@ -16398,8 +16402,6 @@ initial begin
 	sample_rom[255][63] = 8'd10;
 end
 
-   	always @(posedge CLK)
-    	if (CE)
-        	 D <= sample_rom[PROG][SAMPLE];
+
 
 endmodule

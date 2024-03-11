@@ -4,20 +4,20 @@ module prescaler #(
     
 )
 (
-    input CLK,
-    input CE,
-    output CEO
+    input  clk ,
+    input  ce  ,
+    output ceo
 );
 
-reg [W-1:0] Q = 0;
+reg [W-1:0] q = 0;
 
-always @(posedge CLK)
-    if (CE)
-        if (Q == MODULO-1)
-            Q <= {W{1'd0}};
+always @(posedge clk)
+    if (ce)
+        if (q == MODULO-1)
+            q <= {W{1'd0}};
         else
-            Q <= Q+1;     
+            q <= q+1;     
 
-    assign CEO = CE & (Q == MODULO-1);
+    assign ceo = ce & (q == MODULO-1);
     
 endmodule

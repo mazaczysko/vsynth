@@ -3,22 +3,22 @@ module up_cnt_mod #(
     parameter W = 4 
 )
 (
-    input               CLK,
-    input               CE,
-    input               CLR,
-    output reg [W-1:0]  Q = 0,
-    output              CO
+    input               clk   ,
+    input               ce    ,
+    input               clr   ,
+    output reg [W-1:0]  q = 0 ,
+    output              co
 );
 
-always @(posedge CLK)
-    if (CLR)
-        Q <= {W{1'd0}};
-    else if (CE)
-        if (Q == MODULO-1)
-            Q <= {W{1'd0}};
+always @(posedge clk)
+    if (clr)
+        q <= {W{1'd0}};
+    else if (ce)
+        if (q == MODULO-1)
+            q <= {W{1'd0}};
         else
-            Q <= Q+1;
+            q <= q+1;
             
-    assign CO = CE & (Q == MODULO-1);
+    assign co = ce & (q == MODULO-1);
 
 endmodule

@@ -2,21 +2,21 @@ module shift_reg #(
     parameter W = 8
 )
 (
-    input               CLK,
-    input               CE,
-    input               CLR,
-    input               DIR, //1 - right, 0 - left
-    input               D,
-    output reg [W-1:0]  Q = 0
+    input               clk   ,
+    input               ce    ,
+    input               clr   ,
+    input               dir   , //1 - right, 0 - left
+    input               d     ,
+    output reg [W-1:0]  q = 0
 );
 
-always @(posedge CLK)
-    if (CLR)
-        Q <= {W{1'd0}};
-    else if(CE)
-        if( DIR )
-            Q <= {D,Q[W-1:1]};
+always @(posedge clk)
+    if (clr)
+        q <= {W{1'd0}};
+    else if(ce)
+        if( dir )
+            q <= {d,q[W-1:1]};
         else
-            Q <= {Q[W-2:0],D};
+            q <= {q[W-2:0],d};
 
 endmodule
