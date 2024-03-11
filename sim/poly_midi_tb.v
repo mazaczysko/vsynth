@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module poly_midi;
+module poly_midi_tb;
 
 reg clk, ce, rst, dv;
 reg [7:0] data;
