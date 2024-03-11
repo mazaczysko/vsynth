@@ -2,29 +2,29 @@
 
 module rom_tb;
 
-reg CLK;
-reg CE;
-reg [6:0] NOTE_NUM;
+reg clk;
+reg ce;
+reg [6:0] note_num;
 reg [6:0] phase;
-reg [6:0] PROGRAM;
+reg [6:0] program;
 
 //wire [6:0] phase;
 wire [15:0] step;
-wire [7:0] SAMPLE_OUT;
+wire [7:0] sample_out;
 
 step_size_rom rom1(
-    .CLK(CLK),
-    .CE(CE),
-    .A(NOTE_NUM),
-    .D(step)
+    .clk(clk),
+    .ce(ce),
+    .a(note_num),
+    .d(step)
 );
 
 sample_rom rom2(
-    .CLK(CLK),
-    .CE(CE),
+    .clk(clk),
+    .ce(ce),
     .A0(phase),
-    .A1(PROGRAM),
-    .D(SAMPLE_OUT)
+    .A1(program),
+    .D(sample_out)
 );
 
 /*
@@ -34,47 +34,47 @@ up_cnt_mod #(
 )
 phase_cnt
 (
-    .CLK(CLK),
-    .CE(1'd1),
+    .clk(clk),
+    .ce(1'd1),
     .Q(phase)
 );
 */
 
 initial begin
-    CE = 1;
-    CLK = 0;
-    NOTE_NUM = 0;
+    ce = 1;
+    clk = 0;
+    note_num = 0;
     phase = 0;
-    PROGRAM = 0;
+    program = 0;
 end
 
-always #5 CLK = ~CLK;
+always #5 clk = ~clk;
 
 initial begin
 /*
-    #30 NOTE_NUM = 1;
+    #30 note_num = 1;
     phase = 2;
-    #30 NOTE_NUM = 2;
+    #30 note_num = 2;
     phase = 10;
-    #30 NOTE_NUM = 3;
+    #30 note_num = 3;
     phase = 64;
-    #30 NOTE_NUM = 127;
+    #30 note_num = 127;
     phase = 127;
-    #30 NOTE_NUM = 0;
-    PROGRAM = 1;
+    #30 note_num = 0;
+    program = 1;
     phase = 0;
     #30 phase = 64;
     #30 phase = 127;
 */
 
-    //#3810 PROGRAM = 1;
-    //#3810 PROGRAM = 2;
+    //#3810 program = 1;
+    //#3810 program = 2;
     
     #30 phase = 127;
-    #30 PROGRAM = 1;
+    #30 program = 1;
     phase = 0;
     #30 phase = 127;
-    #30 PROGRAM = 2;
+    #30 program = 2;
     phase = 0;
     #30 phase = 127;
 

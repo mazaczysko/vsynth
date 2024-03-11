@@ -3,18 +3,18 @@
 
 module up_cnt_mod_tb;
 
-reg CLK, CE, RST;
-wire CO0, CO1;
-wire [3:0] Q0;
-wire [3:0] Q1;
+reg clk, ce, rst;
+wire co0, co1;
+wire [3:0] q0;
+wire [3:0] q1;
 
 initial begin
-    CLK = 0;
-    RST = 1;
-    CE = 0;
+    clk = 0;
+    rst = 1;
+    ce = 0;
 end
 
-always #1 CLK = ~CLK;
+always #1 clk = ~clk;
 
 up_cnt_mod #(
     .MODULO(10),
@@ -22,11 +22,11 @@ up_cnt_mod #(
 )
 dekada0
 (
-    .CLK(CLK),
-    .CE(CE),
-    .CLR(RST),
-    .Q(Q0),
-    .CO(CO0)
+    .clk(clk),
+    .ce(ce),
+    .clr(rst),
+    .q(q0),
+    .co(co0)
 );
 
 up_cnt_mod #(
@@ -35,16 +35,16 @@ up_cnt_mod #(
 )
 dekada1
 (
-    .CLK(CLK),
-    .CE(CO0),
-    .CLR(RST),
-    .Q(Q1),
-    .CO(CO1)
+    .clk(clk),
+    .ce(co0),
+    .clr(rst),
+    .q(q1),
+    .co(co1)
 );
 
 initial begin
-    #5 CE = 1;
-    #5 RST = 0;
+    #5 ce = 1;
+    #5 rst = 0;
     #200 $stop;
 end
 

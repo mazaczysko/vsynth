@@ -2,7 +2,7 @@
 
 module nco_bank_tb;
 
-reg CLK, CE;
+reg clk, ce;
 
 reg [3:0] sel;
 
@@ -10,47 +10,43 @@ wire [1:0] out;
 wire [1:0] rom_out;
 
 initial begin
-    CLK = 0;
-    CE = 0;
+    clk = 0;
+    ce = 0;
     sel = 4'd0;
 end
 
-always #1 CLK = ~CLK;
+always #1 clk = ~clk;
 
 
 nco_bank bank(
-    .CLK(CLK),
-    .CE(CE),
-    .RST(1'd0),
-    .NOTE_NUM_0(7'd0),
-    .NOTE_NUM_1(7'd1),
-    .NOTE_NUM_2(7'd2),
-    .NOTE_NUM_3(7'd3),
-    .NOTE_VEL_0(7'd127),
-    .NOTE_VEL_1(7'd127),
-    .NOTE_VEL_2(7'd127),
-    .NOTE_VEL_3(7'd127),
-    .PROGRAM(7'd0)
+    .clk        ( clk       ),
+    .ce         ( ce        ),
+    .rst        ( 1'd0      ),
+    .note_num_0 ( 7'd0      ),
+    .note_num_1 ( 7'd1      ),
+    .note_num_2 ( 7'd2      ),
+    .note_num_3 ( 7'd3      ),
+    .note_vel_0 ( 7'd127    ),
+    .note_vel_1 ( 7'd127    ),
+    .note_vel_2 ( 7'd127    ),
+    .note_vel_3 ( 7'd127    ),
+    .program    ( 7'd0      )
 );
 
 
 initial begin
     
-    #5 CE <= 1'd1;
+    #5 ce <= 1'd1;
 
 end
-
-
-
-
 
 endmodule
 
 module rom (
-	input CLK,
-	input CE,
-	input [1:0] A,
-	output reg [1:0] D
+	input clk,
+	input ce,
+	input [1:0] a,
+	output reg [1:0] d
 );
 
    	reg [1:0] step_size_rom [3:0];
@@ -66,9 +62,9 @@ module rom (
 	end
 
 
-   	always @(posedge CLK)
-    	if (CE)
-        	 D <= step_size_rom[A];
+   	always @(posedge clk)
+    	if (ce)
+        	 d <= step_size_rom[a];
 
 endmodule
 

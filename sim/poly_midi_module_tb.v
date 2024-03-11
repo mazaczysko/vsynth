@@ -2,18 +2,18 @@
 
 module poly_midi_module_tb;
 
-reg CLK, CE, RST, dv;
+reg clk, ce, rst, dv;
 reg [7:0] data;
 
 initial begin
-    CLK = 0;
-    CE = 0;
-    RST = 1;
+    clk = 0;
+    ce = 0;
+    rst = 1;
     data = 0;
     dv = 0;
 end
 
-always #1 CLK = ~CLK;
+always #1 clk = ~clk;
 
 wire [6:0] program_out;
 
@@ -28,27 +28,27 @@ wire [6:0] note_vel_2_out;
 wire [6:0] note_vel_3_out;
 
 poly_midi poly( 
-    .CLK(CLK),
-    .CE(CE),
-    .RST(RST),
-    .CHANNEL(4'd0),
-    .DATA(data),
-    .DV(dv),
-    .PROGRAM(program_out),
-    .NOTE_NUM_0(note_num_0_out),
-    .NOTE_NUM_1(note_num_1_out),
-    .NOTE_NUM_2(note_num_2_out),
-    .NOTE_NUM_3(note_num_3_out),
-    .NOTE_VEL_0(note_vel_0_out),
-    .NOTE_VEL_1(note_vel_1_out),
-    .NOTE_VEL_2(note_vel_2_out),
-    .NOTE_VEL_3(note_vel_3_out)
+    .clk        ( clk               ),
+    .ce         ( ce                ),
+    .rst        ( rst               ),
+    .channel    ( 4'd0              ),
+    .data       ( data              ),
+    .dv         ( dv                ),
+    .program    ( program_out       ),
+    .note_num_0 ( note_num_0_out    ),
+    .note_num_1 ( note_num_1_out    ),
+    .note_num_2 ( note_num_2_out    ),
+    .note_num_3 ( note_num_3_out    ),
+    .note_vel_0 ( note_vel_0_out    ),
+    .note_vel_1 ( note_vel_1_out    ),
+    .note_vel_2 ( note_vel_2_out    ),
+    .note_vel_3 ( note_vel_3_out    )
 );
 
 
 initial begin
-CE = 1;
-#5 RST <= 0;
+ce = 1;
+#5 rst <= 0;
 
 //note on 0
 #4 data <= 8'h90;

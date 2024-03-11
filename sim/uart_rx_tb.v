@@ -2,18 +2,18 @@
 
 module uart_rx_tb;
 
-reg CLK, CE, RST, DI;
-wire DV;
-wire [7:0] PO;
+reg clk, ce, rst, di;
+wire dv;
+wire [7:0] po;
 
 initial begin
-    CLK = 0;
-    RST = 1;
-    CE = 0;
-    DI = 1;
+    clk = 0;
+    rst = 1;
+    ce = 0;
+    di = 1;
 end
 
-always #1 CLK = ~CLK;
+always #1 clk = ~clk;
 
 uart_rx #(
     .CLKS_PER_BIT(50),
@@ -21,38 +21,38 @@ uart_rx #(
 )
 uart_receiver
 (
-    .CLK(CLK),
-    .CE(CE),
-    .RST(RST),
-    .DI(DI),
-    .DV(DV),
-    .PO(PO)
+    .clk(clk),
+    .ce(ce),
+    .rst(rst),
+    .di(di),
+    .dv(dv),
+    .po(po)
 );
 
 initial begin
-    #4 CE = 1;
-    #5 RST = 0;
-    #10 DI = 0;  //START
-    #100 DI = 1; //01010101
-    #100 DI = 0;
-    #100 DI = 1;
-    #100 DI = 0;
-    #100 DI = 1;
-    #100 DI = 0;
-    #100 DI = 1;
-    #100 DI = 0;
-    #100 DI = 1; //STOP
+    #4 ce = 1;
+    #5 rst = 0;
+    #10 di = 0;  //START
+    #100 di = 1; //01010101
+    #100 di = 0;
+    #100 di = 1;
+    #100 di = 0;
+    #100 di = 1;
+    #100 di = 0;
+    #100 di = 1;
+    #100 di = 0;
+    #100 di = 1; //STOP
 
-    #100 DI = 0; //START
-    #100 DI = 1; //01010101
-    #100 DI = 0;
-    #100 DI = 1;
-    #100 DI = 0;
-    #100 DI = 1;
-    #100 DI = 0;
-    #100 DI = 1;
-    #100 DI = 0;
-    #100 DI = 0; //NO STOP
+    #100 di = 0; //START
+    #100 di = 1; //01010101
+    #100 di = 0;
+    #100 di = 1;
+    #100 di = 0;
+    #100 di = 1;
+    #100 di = 0;
+    #100 di = 1;
+    #100 di = 0;
+    #100 di = 0; //NO STOP
 
     #4000 $stop;
 end
