@@ -40,9 +40,9 @@ out_reg
 (
     .clk ( clk                   ),
     .ce  ( (status == READ) & bd ),
-    .CLR ( rst                   ),
-    .diR ( 1'b1                  ),
-    .D   ( data                  ),
+    .clr ( rst                   ),
+    .dir ( 1'b1                  ),
+    .d   ( data                  ),
     .q   ( po                    )
 );
 
@@ -55,7 +55,7 @@ baud_counter
 (
     .clk ( clk          ),
     .ce  ( ~baud_reset  ),
-    .CLR ( baud_reset   ),
+    .clr ( baud_reset   ),
     .q   ( baud_cnt     ),
     .co  ( bd           )
 );

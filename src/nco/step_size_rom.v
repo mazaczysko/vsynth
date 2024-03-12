@@ -13,7 +13,7 @@ reg [15:0] step_size_rom [127:0];
 always @(posedge clk)
 	if (ce)
 			d <= step_size_rom[a];
-`
+
 initial begin
 	step_size_rom[0] = 16'd17;
 	step_size_rom[1] = 16'd18;
