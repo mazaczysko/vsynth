@@ -29,7 +29,7 @@ sample_rom rom (
 	.clk	( clk		     ),
 	.ce		( ce			 ),
 	.sample ( phase			 ), //phase_reg_out[15:9]
-	.prog 	( {1'd0,program} ), //IMPORTANT TO FIX!!!!!!
+	.prog 	( program		 ),
 	.d	  	( sample		 )
 );
 
