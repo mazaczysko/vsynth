@@ -26,11 +26,11 @@ always @(posedge clk)
 		sample_out <= sample_final;
 
 sample_rom rom (
-	.clk	( clk		     ),
-	.ce		( ce			 ),
-	.sample ( phase			 ), //phase_reg_out[15:9]
-	.prog 	( program		 ),
-	.d	  	( sample		 )
+	.clk		 ( clk		     ),
+	.re			 ( ce			 ),
+	.addr_sample ( phase         ), //phase_reg_out[15:9]
+	.addr_prog 	 ( program		 ),
+	.data	  	 ( sample		 )
 );
 
 endmodule

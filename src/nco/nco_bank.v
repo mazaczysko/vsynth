@@ -120,10 +120,10 @@ note_num_mux
 );
 
 step_size_rom step_rom (
-	.clk ( clk              ),
-	.ce  ( step_rom_ce      ),
-	.a   ( note_num_mux_out ),
-	.d   ( step_size        )
+	.clk  ( clk              ),
+	.re   ( step_rom_ce      ),
+	.addr ( note_num_mux_out ),
+	.data ( step_size        )
 );
 
 mux_4_1_hot1 #(

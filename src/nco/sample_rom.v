@@ -1,9 +1,9 @@
 module sample_rom (
-	input            clk    ,
-	input            ce     ,
-	input      [5:0] sample ,
-	input 	   [6:0] prog   ,
-	output reg [7:0] d
+	input            clk    		,
+	input            re     		,
+	input      [5:0] addr_sample 	,
+	input 	   [6:0] addr_prog   	,
+	output reg [7:0] data
 );
 
 localparam WFM_CNT = 256;
@@ -17,6 +17,6 @@ initial
 
 always @(posedge clk)
 	if (ce)
-    	d <= sample_rom[{prog, sample}];
+    	data <= sample_rom[{addr_prog, addr_sample}];
 
 endmodule
