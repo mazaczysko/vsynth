@@ -21,7 +21,7 @@ set origin_dir "."
 set _xil_proj_name_ $project_name
 
 # Create project
-create_project ${_xil_proj_name_} ./${_xil_proj_name_} -part xc7a50ticsg324-1L
+create_project ${_xil_proj_name_} ./${_xil_proj_name_} -part xc7a50ticsg324-1L -force
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -71,8 +71,10 @@ set files [list \
  [file normalize "${src_dir}/nco/nco.v"] \
  [file normalize "${src_dir}/nco/nco_bank.v"] \
  [file normalize "${src_dir}/nco/phase2sample.v"] \
- [file normalize "${src_dir}/nco/sample_rom.v"] \
  [file normalize "${src_dir}/nco/step_size_rom.v"] \
+ [file normalize "${src_dir}/wavetables/sample_rom.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_data_rom.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_offset_rom.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
