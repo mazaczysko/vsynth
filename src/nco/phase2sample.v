@@ -22,15 +22,15 @@ assign phase = half_select ? 6'd63 - half_phase : half_phase;
 assign sample_final = half_select ? 8'd255 - sample : sample;
 
 always @(posedge clk)
-	if(ce)
-		sample_out <= sample_final;
+    if(ce)
+        sample_out <= sample_final;
 
 sample_rom rom (
-	.clk		 ( clk		     ),
-	.re			 ( ce			 ),
-	.addr_sample ( phase         ), //phase_reg_out[15:9]
-	.addr_prog 	 ( program		 ),
-	.data	  	 ( sample		 )
+    .clk		 ( clk		     ),
+    .re			 ( ce			 ),
+    .addr_sample ( phase         ), //phase_reg_out[15:9]
+    .addr_prog 	 ( program		 ),
+    .data	  	 ( sample		 )
 );
 
 endmodule

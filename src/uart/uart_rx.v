@@ -75,14 +75,14 @@ bit_counter
 
 
 uart_fsm fsm (
-	.clk    ( clk    ),
-	.ce     ( ce     ),
-	.clr    ( rst    ),
-	.di     ( data   ),
-	.hb     ( hb     ),
-	.bd     ( bd     ),
-	.lb     ( lb     ),
-	.status ( status )
+    .clk    ( clk    ),
+    .ce     ( ce     ),
+    .clr    ( rst    ),
+    .di     ( data   ),
+    .hb     ( hb     ),
+    .bd     ( bd     ),
+    .lb     ( lb     ),
+    .status ( status )
 );
 
 endmodule

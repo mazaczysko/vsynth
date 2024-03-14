@@ -1,9 +1,9 @@
 module seg_8bit (
-	input             clk       ,
-	input 			  ce        ,
-	input 		[7:0] bin_in    ,
-	output reg 	[7:0] seg = 255 ,
-	output reg 	[3:0] an
+    input             clk       ,
+    input 			  ce        ,
+    input 		[7:0] bin_in    ,
+    output reg 	[7:0] seg = 255 ,
+    output reg 	[3:0] an
 );
 
 wire [1:0] q    ;

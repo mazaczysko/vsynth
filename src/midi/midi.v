@@ -1,17 +1,17 @@
 module midi (
-	input 			clk		 ,
-	input 			ce		 ,
-	input 			rst		 ,
+    input 			clk		 ,
+    input 			ce		 ,
+    input 			rst		 ,
 
-	input  [3:0]	channel	 ,
-	input  [7:0]	data	 ,
-	input 			dv		 ,
-	
-	output [6:0] 	note_num 	 ,
-	output [6:0] 	note_vel 	 ,
-	output [6:0] 	program 	 ,
-	output     		note_on_out  ,
-	output     		note_off_out
+    input  [3:0]	channel	 ,
+    input  [7:0]	data	 ,
+    input 			dv		 ,
+    
+    output [6:0] 	note_num 	 ,
+    output [6:0] 	note_vel 	 ,
+    output [6:0] 	program 	 ,
+    output     		note_on_out  ,
+    output     		note_off_out
 );
 
 //FSM States
@@ -91,100 +91,100 @@ note_on_register
 //Input buffers
 
 register_clr #(
-	.W(8)
+    .W(8)
 )
 status_byte
 (
-	.clk ( clk				),
-	.ce  ( fsm_dispatch		),
-	.clr ( reg_clr			),
-	.d   ( data				),
-	.q   ( current_status	)
+    .clk ( clk				),
+    .ce  ( fsm_dispatch		),
+    .clr ( reg_clr			),
+    .d   ( data				),
+    .q   ( current_status	)
 );
 
 //Output registers
 
 register_clr #(
-	.W(7)
+    .W(7)
 )
 note_num_out
 (
-	.clk (clk				),
-	.ce  (fsm_handle_note	),
-	.clr (reg_clr			),
-	.d   (note_num_buf_out	),
-	.q   (note_num			)
+    .clk (clk				),
+    .ce  (fsm_handle_note	),
+    .clr (reg_clr			),
+    .d   (note_num_buf_out	),
+    .q   (note_num			)
 );
 
 register_clr #(
-	.W(7)
+    .W(7)
 )
 note_vel_out
 (
-	.clk ( clk				),
-	.ce  ( fsm_handle_note	),
-	.clr ( reg_clr			),
-	.d   ( note_vel_buf_out	),
-	.q   ( note_vel			)
+    .clk ( clk				),
+    .ce  ( fsm_handle_note	),
+    .clr ( reg_clr			),
+    .d   ( note_vel_buf_out	),
+    .q   ( note_vel			)
 );
 
 register_clr #(
-	.W(7)
+    .W(7)
 )
 program_out
 (
-	.clk ( clk				),
-	.ce  ( fsm_handle_prog	),
-	.clr ( reg_clr			),
-	.d   ( program_buf_out	),
-	.q   ( program			)
+    .clk ( clk				),
+    .ce  ( fsm_handle_prog	),
+    .clr ( reg_clr			),
+    .d   ( program_buf_out	),
+    .q   ( program			)
 );
 
 //Buffers
 register_clr #(
-	.W(7)
+    .W(7)
 )
 note_num_buf
 (
-	.clk ( clk					),
-	.ce  ( fsm_recv_num_and_dv	),
-	.clr ( reg_clr				),
-	.d   ( data[6:0]			),
-	.q   ( note_num_buf_out		)
+    .clk ( clk					),
+    .ce  ( fsm_recv_num_and_dv	),
+    .clr ( reg_clr				),
+    .d   ( data[6:0]			),
+    .q   ( note_num_buf_out		)
 );
 
 register_clr #(
-	.W(7)
+    .W(7)
 )
 note_vel_buf
 (
-	.clk ( clk					),
-	.ce  ( fsm_recv_vel_and_dv	),
-	.clr ( reg_clr				),
-	.d   ( data[6:0]			),
-	.q   ( note_vel_buf_out		)
+    .clk ( clk					),
+    .ce  ( fsm_recv_vel_and_dv	),
+    .clr ( reg_clr				),
+    .d   ( data[6:0]			),
+    .q   ( note_vel_buf_out		)
 );
 
 register_clr #(
-	.W(7)
+    .W(7)
 )
 program_buf
 (
-	.clk ( clk					),
-	.ce  ( fsm_recv_prog_and_dv	),
-	.clr ( reg_clr				),
-	.d   ( data[6:0]			),
-	.q   ( program_buf_out		)
+    .clk ( clk					),
+    .ce  ( fsm_recv_prog_and_dv	),
+    .clr ( reg_clr				),
+    .d   ( data[6:0]			),
+    .q   ( program_buf_out		)
 );
 
 midi_fsm fsm(
-	.clk     ( clk		 ),
-	.ce      ( ce		 ),
-	.rst     ( rst		 ),
-	.channel ( channel	 ),
-	.data    ( data		 ),
-	.dv      ( dv		 ),
-	.status  ( fsm_state )
+    .clk     ( clk		 ),
+    .ce      ( ce		 ),
+    .rst     ( rst		 ),
+    .channel ( channel	 ),
+    .data    ( data		 ),
+    .dv      ( dv		 ),
+    .status  ( fsm_state )
 );
 
 endmodule

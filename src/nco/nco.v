@@ -1,13 +1,13 @@
 module nco (
-	input         clk         ,
-	input         ce          ,
-	input         trig_read   ,
-	input  [15:0] step_size   , //input of phase adder
-	input  [6:0]  note_vel    ,
-	input         trig_sample ,
-	input  [7:0]  prog_sample ,
-	output [6:0]  phase       ,
-	output [7:0]  sample_out
+    input         clk         ,
+    input         ce          ,
+    input         trig_read   ,
+    input  [15:0] step_size   , //input of phase adder
+    input  [6:0]  note_vel    ,
+    input         trig_sample ,
+    input  [7:0]  prog_sample ,
+    output [6:0]  phase       ,
+    output [7:0]  sample_out
 );
 
 wire [7:0]  sample;

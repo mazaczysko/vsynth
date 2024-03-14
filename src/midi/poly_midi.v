@@ -1,21 +1,21 @@
 module poly_midi(
-	input 			clk ,
-	input 			ce  ,
-	input 			rst ,
+    input 			clk ,
+    input 			ce  ,
+    input 			rst ,
 
-	input  [3:0]	channel ,
-	input  [7:0]	data    ,
-	input 			dv      ,
-	
+    input  [3:0]	channel ,
+    input  [7:0]	data    ,
+    input 			dv      ,
+    
     output [6:0]    program     ,
-	output [6:0]    note_num_0  ,
-	output [6:0]    note_num_1  ,
-	output [6:0]    note_num_2  ,
-	output [6:0]    note_num_3  ,
-	output [6:0]    note_vel_0  ,
-	output [6:0]    note_vel_1  ,
-	output [6:0]    note_vel_2  ,
-	output [6:0]    note_vel_3
+    output [6:0]    note_num_0  ,
+    output [6:0]    note_num_1  ,
+    output [6:0]    note_num_2  ,
+    output [6:0]    note_num_3  ,
+    output [6:0]    note_vel_0  ,
+    output [6:0]    note_vel_1  ,
+    output [6:0]    note_vel_2  ,
+    output [6:0]    note_vel_3
 );
 
 
