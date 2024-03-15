@@ -14,7 +14,7 @@ initial
     $readmemh("step_size_rom.mem", step_size_rom, 0, ROM_SIZE-1 );
 
 always @(posedge clk)
-    if (ce)
+    if (re)
             data <= step_size_rom[addr];
 
 endmodule

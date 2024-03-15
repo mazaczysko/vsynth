@@ -1,7 +1,7 @@
 module wavetable_offset_rom (
     input            clk    ,
     input            re     ,
-    input            addr   ,
+    input      [4:0] addr   ,
     output reg [7:0] data
 );
 
