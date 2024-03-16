@@ -58,6 +58,7 @@ set files [list \
  [file normalize "${src_dir}/common/register.v"] \
  [file normalize "${src_dir}/common/register_clr.v"] \
  [file normalize "${src_dir}/common/up_cnt_mod.v"] \
+ [file normalize "${src_dir}/common/up_cnt_mod_load.v"] \
  [file normalize "${src_dir}/common/shift_reg.v"] \
  [file normalize "${src_dir}/7seg/bcd7seg.v"] \
  [file normalize "${src_dir}/7seg/bin2bcd.v"] \
@@ -75,6 +76,8 @@ set files [list \
  [file normalize "${src_dir}/wavetables/sample_rom.v"] \
  [file normalize "${src_dir}/wavetables/wavetable_data_rom.v"] \
  [file normalize "${src_dir}/wavetables/wavetable_offset_rom.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_loader.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_ram.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -98,6 +101,8 @@ set files [list \
  [file normalize "${sim_dir}/poly_midi_module_tb.v"] \
  [file normalize "${sim_dir}/nco_bank_tb.v"] \
  [file normalize "${sim_dir}/shift_reg_tb.v"] \
+ [file normalize "${sim_dir}/wavetable_ram_tb.v"] \
+ [file normalize "${sim_dir}/up_cnt_mod_load_tb.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
