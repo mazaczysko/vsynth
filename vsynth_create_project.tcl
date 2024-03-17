@@ -73,16 +73,23 @@ set files [list \
  [file normalize "${src_dir}/nco/nco_bank.v"] \
  [file normalize "${src_dir}/nco/phase2sample.v"] \
  [file normalize "${src_dir}/nco/step_size_rom.v"] \
+ [file normalize "${src_dir}/nco/step_size_rom.mem"] \
  [file normalize "${src_dir}/wavetables/sample_rom.v"] \
  [file normalize "${src_dir}/wavetables/wavetable_data_rom.v"] \
  [file normalize "${src_dir}/wavetables/wavetable_offset_rom.v"] \
  [file normalize "${src_dir}/wavetables/wavetable_loader.v"] \
  [file normalize "${src_dir}/wavetables/wavetable_ram.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_offset_rom.mem"] \
+ [file normalize "${src_dir}/wavetables/wavetable_data_rom.mem"] \
+ [file normalize "${src_dir}/wavetables/sample_rom.mem"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
+set_property -name "top" -value "vsynth_test" -objects $obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "top" -value "vsynth_test" -objects $obj
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
@@ -103,6 +110,7 @@ set files [list \
  [file normalize "${sim_dir}/shift_reg_tb.v"] \
  [file normalize "${sim_dir}/wavetable_ram_tb.v"] \
  [file normalize "${sim_dir}/up_cnt_mod_load_tb.v"] \
+ [file normalize "${sim_dir}/wavetable_loader_tb.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -110,5 +118,4 @@ add_files -norecurse -fileset $obj $files
 set obj [get_filesets sim_1]
 set_property -name "top" -value "vsynth_test" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
-
 set_property -name "top" -value "vsynth_test" -objects $obj
