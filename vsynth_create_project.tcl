@@ -50,6 +50,9 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 set obj [get_filesets sources_1]
 set files [list \
  [file normalize "${src_dir}/vsynth_test.v"] \
+ [file normalize "${src_dir}/debouncer_test.v"] \
+ [file normalize "${src_dir}/common/debouncer_pulse.v"] \
+ [file normalize "${src_dir}/common/edge_detector.v"] \
  [file normalize "${src_dir}/midi_test.v"] \
  [file normalize "${src_dir}/uart_rx_test.v"] \
  [file normalize "${src_dir}/common/mux_4_1_hot1.v"] \
