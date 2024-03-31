@@ -1,16 +1,13 @@
 module wavetable_loader (
     input         clk               ,
-
     input   [4:0] wtb_num           ,
     input         wtb_load          ,
     input   [1:0] voice_num         ,
-
     output  [3:0] wtb_ram_we        ,
     output  [5:0] wtb_ram_addr_w    ,
     output  [7:0] wtb_ram_wfm_l_w   ,
     output  [7:0] wtb_ram_wfm_r_w   ,
     output  [7:0] wtb_ram_factor_w  ,
-
     output  [4:0] done_wtb_num      ,
     output        done              ,     
     output        idle              

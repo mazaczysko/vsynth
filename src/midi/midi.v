@@ -1,6 +1,5 @@
 module midi (
     input 			clk		 ,
-    input 			ce		 ,
     input 			rst		 ,
 
     input  [3:0]	channel	 ,
@@ -24,7 +23,7 @@ parameter HANDLE_NOTE = 3'b101;
 parameter RECV_PROG   = 3'b110;
 parameter HANDLE_PROG = 3'b111;
 
-//MIdI status codes
+//MIDI status codes
 parameter S_NOTE_OFF = 4'h8;
 parameter S_NOTE_ON  = 4'h9;
 
@@ -69,7 +68,7 @@ register_clr #(
 note_off_register
 (
     .clk ( clk			),
-    .ce  ( ce			),
+    .ce  ( 1'b1			),
     .clr ( reg_clr		),
     .d   ( note_off		),
     .q   ( note_off_out	)
@@ -81,7 +80,7 @@ register_clr #(
 note_on_register
 (
     .clk ( clk			),
-    .ce  ( ce			),
+    .ce  ( 1'b1			),
     .clr ( reg_clr		),
     .d   ( note_on		),
     .q   ( note_on_out	)
@@ -179,7 +178,6 @@ program_buf
 
 midi_fsm fsm(
     .clk     ( clk		 ),
-    .ce      ( ce		 ),
     .rst     ( rst		 ),
     .channel ( channel	 ),
     .data    ( data		 ),

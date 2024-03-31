@@ -1,6 +1,5 @@
 module midi_fsm(
-   input 			clk		,
-    input			ce		,
+    input 			clk		,
     input 			rst		,
     input   [3:0]   channel	,	
     input   [7:0]	data	,
@@ -30,7 +29,7 @@ assign status = state;
 always @(posedge clk)
     if (rst)
         state <= RESET;
-    else if (ce)
+    else
         case (state)
             RESET:
                 state <= RECV;
