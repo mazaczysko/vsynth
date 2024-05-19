@@ -29,9 +29,9 @@ assign waveform_right_r = data_read[15:8]   ;
 assign factor_r         = data_read[23:16]  ;
 
 always @(posedge clk)
-    if (re)
-        data_read <= wavetable_ram[addr_r];
-    else if (we)
+    if (we)
         wavetable_ram[addr_w] <= data_write;   
+    else if (re)
+        data_read <= wavetable_ram[addr_r];
 
 endmodule

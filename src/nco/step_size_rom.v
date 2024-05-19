@@ -11,7 +11,7 @@ localparam ROM_SIZE = 128;
 reg [15:0] step_size_rom [ROM_SIZE-1:0];
 
 initial
-    $readmemh("step_size_rom.mem", step_size_rom, 0, ROM_SIZE-1 );
+    $readmemh("C:/Users/mrygula/Desktop/vsynth/src/nco/step_size_rom.mem", step_size_rom, 0, ROM_SIZE-1 );
 
 always @(posedge clk)
     if (re)
