@@ -2,6 +2,7 @@
 module wtb_synthesis (
 
     input        clk,
+    input        sample_rate,
 
     input        wtb_load,
     input  [4:0] wtb_num,
@@ -10,9 +11,9 @@ module wtb_synthesis (
 
     input [6:0] program,
     input [6:0] note_num,
+    input [6:0] note_vel,
 
-    output [7:0] sample_out,
-    output       sample_rate_out
+    output [7:0] sample_out
 );
 
 wire [3:0] wtb_ram_we;
@@ -29,9 +30,12 @@ wire [7:0] wtb_ram_factor_r;
 wire [6:0] nco_phase;
 wire       nco_phase_dv;
 
-wire sample_rate_ceo;
+wire [15:0] sample_vel;
+wire [7:0]  output_sample;
 
-assign sample_rate_out = sample_rate_ceo;
+assign sample_vel = output_sample * note_vel;
+assign sample_out = sample_vel[14:7];
+
 
 wavetable_loader wtb_loader_inst (
     .clk                    ( clk               ),
@@ -64,21 +68,9 @@ wavetable_ram wavetable_ram_inst (
     .factor_w         ( wtb_ram_factor_w  )
 );
 
-prescaler #(
-    .MODULO ( 3125 ),
-    //.MODULO ( 64   ),
-    .W      ( 12   )
-)
-sample_rate_prescaler
-(
-    .clk ( clk             ),
-    .ce  ( 1'b1            ),
-    .ceo ( sample_rate_ceo )
-);
-
 nco nco_inst (
     .clk         ( clk             ),
-    .sample_rate ( sample_rate_ceo ),
+    .sample_rate ( sample_rate     ),
     .note_num    ( note_num        ),
     .phase       ( nco_phase       ),
     .phase_dv    ( nco_phase_dv    )
@@ -91,7 +83,7 @@ phase2sample phase2sample_inst (
     .wfm_num_l   ( wtb_ram_wfm_l_r  ),
     .wfm_num_r   ( wtb_ram_wfm_r_r  ),
     .factor      ( wtb_ram_factor_r ), 
-    .sample_out  ( sample_out       )
+    .sample_out  ( output_sample    )
 );
 
 endmodule
