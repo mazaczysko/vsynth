@@ -56,7 +56,7 @@ assign an[7:4] = 4'b1111;
 
 assign sample_sum = sample_out0 + sample_out1 + sample_out2 + sample_out3;
 assign sample_sum_divided_8bit = sample_sum[9:2]; 
-assign sample_out = sample_sum_divided_8bit; 
+assign sample_out = sample_out_reg; 
 
 
 uart_rx uart (
@@ -70,7 +70,7 @@ uart_rx uart (
 
 midi midi_inst (
     .clk        ( clk   ),
-    .rst        ( rst   ),
+    .rst        ( 1'd0  ),
 
     .channel    ( channel   ),
     .data	    ( uart_out  ),
@@ -114,8 +114,8 @@ cc_decoder cc_decoder_inst (
     .cc_valid ( cc_valid ),
 
     .wtb_load ( wtb_load ),
-    .wtb_num  ( wtb_num  ),
-    .wfm_num  ( wfm_num  )
+    .wtb_num  ( {2'd0,wtb_num}),
+    .wfm_num  ( {2'd0,wfm_num})
 );
 
 prescaler #(

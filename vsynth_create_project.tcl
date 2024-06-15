@@ -76,6 +76,7 @@ set files [list \
  [file normalize "${src_dir}/midi/midi_fsm.v"] \
  [file normalize "${src_dir}/midi/poly_midi.v"] \
  [file normalize "${src_dir}/midi/polyphony.v"] \
+ [file normalize "${src_dir}/midi/cc_decoder.v"] \
  [file normalize "${src_dir}/nco/nco.v"] \
  [file normalize "${src_dir}/nco/nco_bank.v"] \
  [file normalize "${src_dir}/nco/phase2sample.v"] \
@@ -126,6 +127,7 @@ set files [list \
  [file normalize "${sim_dir}/uart_rx_tb.v"] \
  [file normalize "${sim_dir}/midi_tb.v"] \
  [file normalize "${sim_dir}/poly_midi_module_tb.v"] \
+ [file normalize "${sim_dir}/phase2sample_tb.v"] \
  [file normalize "${sim_dir}/nco_bank_tb.v"] \
  [file normalize "${sim_dir}/shift_reg_tb.v"] \
  [file normalize "${sim_dir}/wavetable_ram_tb.v"] \
