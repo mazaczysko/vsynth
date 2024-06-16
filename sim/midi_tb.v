@@ -16,22 +16,22 @@ wire [6:0] program;
 initial begin
     clk = 0;
     ce = 1;
-	rst = 0;
-	dv = 0;
-	data = 0;
+    rst = 0;
+    dv = 0;
+    data = 0;
 end
 
 always #1 clk = ~clk; 
 
 midi midi1(
-	.clk      ( clk      ),
-	.ce       ( ce       ),
-	.rst      ( rst      ),
-	.data     ( data     ),
-	.dv       ( dv       ),
-	.note_num ( note_num ),
-	.note_vel ( note_vel ),
-	.program  ( program  )
+    .clk      ( clk      ),
+    .ce       ( ce       ),
+    .rst      ( rst      ),
+    .data     ( data     ),
+    .dv       ( dv       ),
+    .note_num ( note_num ),
+    .note_vel ( note_vel ),
+    .program  ( program  )
 );
 
 initial begin
@@ -45,7 +45,7 @@ initial begin
     #20	data = 8'd100; //Note vel
     #2	dv = 1;
     #2 	dv = 0;
-	
+    
     #20 data = 8'h80; //Status note off
     #2	dv = 1;
     #2 	dv = 0;
@@ -75,7 +75,7 @@ initial begin
     #20	data = 8'd50; //Some useless data
     #2	dv = 1;
     #2 	dv = 0;
-	
+    
     #20 data = 8'hc0; //Status program
     #2	dv = 1;
     #2 	dv = 0;
@@ -85,7 +85,7 @@ initial begin
     #20	data = 8'd50; //Some useless data
     #2	dv = 1;
     #2 	dv = 0;
-	
+    
     #20 data = 8'hff; //Status RESET
     #2	dv = 1;
     #2 	dv = 0;
@@ -95,8 +95,8 @@ initial begin
     #20	data = 8'd50;
     #2	dv = 1;
     #2 	dv = 0;
-	
-	//NOTE ON
+    
+    //NOTE ON
     #20 data = 8'h90; //Status note on
     #2	dv = 1;
     #2 	dv = 0;

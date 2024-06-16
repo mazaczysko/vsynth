@@ -1,15 +1,17 @@
 module seg_8bit (
-	input             clk       ,
-	input 			  ce        ,
-	input 		[7:0] bin_in    ,
-	output reg 	[7:0] seg = 255 ,
-	output reg 	[3:0] an
+    input             clk       ,
+    input 			  ce        ,
+    input 		[7:0] bin_in0    ,
+    input 		[7:0] bin_in1    ,
+    output reg 	[7:0] seg = 255 ,
+    output reg 	[3:0] an
 );
 
-wire [1:0] q    ;
+wire [2:0] q    ;
 wire       ceo  ;
 
-wire [11:0] bcd;
+wire [11:0] bcd0;
+wire [11:0] bcd1;
 
 wire [3:0] an_out;
 
@@ -33,13 +35,18 @@ always @(posedge clk)
         case (q)
             2'd0 : seg <= seg0; 
             2'd1 : seg <= seg1; 
-            2'd2 : seg <= seg2; 
-            2'd3 : seg <= {seg3[7:1],1'd0}; 
+            2'd2 : seg <= {seg2[7:1],1'd0}; 
+            2'd3 : seg <= seg3; 
         endcase
 
-bin2bcd conv (
-    .bin ( bin_in ),
-    .bcd ( bcd    )
+bin2bcd conv0 (
+    .bin ( bin_in0 ),
+    .bcd ( bcd0    )
+);
+
+bin2bcd conv1 (
+    .bin ( bin_in1 ),
+    .bcd ( bcd1    )
 );
 
 up_cnt_mod #(
@@ -70,29 +77,29 @@ prescaler
 bcd7seg bcdseg0 (
     .clk ( clk      ),
     .ce  ( 1'd1     ),
-    .bcd ( bcd[3:0] ),
+    .bcd ( bcd1[3:0] ),
     .seg ( seg0     )
 );
 
 bcd7seg bcdseg1 (
     .clk ( clk      ),
     .ce  ( 1'd1     ),
-    .bcd ( bcd[7:4] ),
+    .bcd ( bcd1[7:4] ),
     .seg ( seg1     )
 );
 
 bcd7seg bcdseg2 (
     .clk ( clk       ),
     .ce  ( 1'd1      ),
-    .bcd ( bcd[11:8] ),
+    .bcd ( bcd0[3:0] ),
     .seg ( seg2      )
 );
 
 bcd7seg bcdseg3 (
-    .clk ( clk  ),
-    .ce  ( 1'd1 ),
-    .bcd ( 4'd0 ),
-    .seg ( seg3 )
+    .clk ( clk       ),
+    .ce  ( 1'd1      ),
+    .bcd ( bcd0[7:4] ),
+    .seg ( seg3      )
 );
 
 endmodule

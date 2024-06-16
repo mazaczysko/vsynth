@@ -5,19 +5,28 @@
 
 Design assumtions and features to implement:
 - [x] 8-bit samples 
-- [X] monophony
+- [X] 4-keys polyphony
 - [x] Control over MIDI
-- [ ] PPG Wave 2.2 wavetables
 - [x] MIDI velocity sensitivity
-- [ ] MIDI pitchbend
+- [x] PPG Wave 2.2 wavetables
 - [ ] ADSR envelope generator
+- [ ] MIDI pitchbend
 - [ ] LFO 
 - [ ] at least 2 voice polyphony
 
+## Building the project
+
+Launch Vivado and using TCL console enter the script directory and build the project.
+
+```tcl
+cd {path\to\script\directory}
+source .\vsynth_create_project.tcl
+```
+
 ## Hardware
-For now all of the tests are running on Digilent Nexys 3 board with Xilinx Spartan-6 XC6LX16-CSG324 with homemade DAC and MIDI2UART extension board.
+For now all of the tests are running on Digilent Nexys A7 board with Xilinx Artix-7 XC7A50T-1CSG324I with  DAC and MIDI extension board.
 The code is written in `verilog` to be possibly most portable and efficient.
 
-<br>*Digilent Nexys 3 with DAC and MIDI interface:*<br>
+*Digilent Nexys A7 with DAC and MIDI interface:*
 
 <img width=50% src=img/vsynth.jpg>

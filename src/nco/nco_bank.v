@@ -81,15 +81,15 @@ sample_sum_reg
 
 //32kHz sample rate @ 100MHz clk
 prescaler #(
-	.MODULO(3125),
-	//.MODULO(30), //For simulation
-	.W(12)
+    .MODULO(3125),
+    //.MODULO(30), //For simulation
+    .W(12)
 )
 sample_rate
 (
-	.clk ( clk  ),
-	.ce  ( ce   ),
-	.ceo ( trig )
+    .clk ( clk  ),
+    .ce  ( ce   ),
+    .ceo ( trig )
 );
 
 shift_reg_right #(
@@ -120,10 +120,10 @@ note_num_mux
 );
 
 step_size_rom step_rom (
-	.clk ( clk              ),
-	.ce  ( step_rom_ce      ),
-	.a   ( note_num_mux_out ),
-	.d   ( step_size        )
+    .clk  ( clk              ),
+    .re   ( step_rom_ce      ),
+    .addr ( note_num_mux_out ),
+    .data ( step_size        )
 );
 
 mux_4_1_hot1 #(

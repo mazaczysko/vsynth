@@ -1,11 +1,11 @@
 module vsynth_test (
-	input 	     clk		 ,
-	input 		 di			 ,
-	input  [3:0] channel	 ,
-	output [3:0] channel_led ,
-	output [7:0] sample_out  ,
-	output [7:0] seg         ,
-	output [7:0] an
+    input 	     clk		 ,
+    input 		 di			 ,
+    input  [3:0] channel	 ,
+    output [3:0] channel_led ,
+    output [7:0] sample_out  ,
+    output [7:0] seg         ,
+    output [7:0] an
 );
 
 wire dv;
@@ -68,7 +68,7 @@ nco_bank voice (
     .note_vel_1     ( note_vel_1 ),
     .note_vel_2     ( note_vel_2 ),
     .note_vel_3     ( note_vel_3 ),	
-	.sample_sum_out ( sample_out )
+    .sample_sum_out ( sample_out )
 );
 
 seg_8bit disp (

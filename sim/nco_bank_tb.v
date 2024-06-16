@@ -43,28 +43,28 @@ end
 endmodule
 
 module rom (
-	input clk,
-	input ce,
-	input [1:0] a,
-	output reg [1:0] d
+    input clk,
+    input ce,
+    input [1:0] a,
+    output reg [1:0] d
 );
 
-   	reg [1:0] step_size_rom [3:0];
+       reg [1:0] step_size_rom [3:0];
    
-   	//initial
-	//	$readmemh("step_size_rom.mem", step_size_rom );
+       //initial
+    //	$readmemh("step_size_rom.mem", step_size_rom );
 
-	initial begin
-		step_size_rom[0] = 2'd0;
-		step_size_rom[1] = 2'd1;
-		step_size_rom[2] = 2'd2;
-		step_size_rom[3] = 2'd3;
-	end
+    initial begin
+        step_size_rom[0] = 2'd0;
+        step_size_rom[1] = 2'd1;
+        step_size_rom[2] = 2'd2;
+        step_size_rom[3] = 2'd3;
+    end
 
 
-   	always @(posedge clk)
-    	if (ce)
-        	 d <= step_size_rom[a];
+       always @(posedge clk)
+        if (ce)
+             d <= step_size_rom[a];
 
 endmodule
 

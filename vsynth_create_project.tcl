@@ -1,13 +1,16 @@
 # vsynth_create_project.tcl: Tcl script for re-creating project 'vsynth'
 
 set script_dir [file dirname [file normalize [info script]]]
-puts "script directory (this file): $script_dir"
+puts "script directory: $script_dir"
 
 set src_dir [file normalize [file join $script_dir "src"]]
-puts "src directory (all hdl, brd files): $src_dir"
+puts "src directory: $src_dir"
+
+set constr_dir [file normalize [file join $script_dir "constr"]]
+puts "constr directory: $constr_dir"
 
 set sim_dir [file normalize [file join $script_dir "sim"]]
-puts "src directory (all hdl, brd files): $sim_dir"
+puts "sim directory: $sim_dir"
 
 set project_name "vsynth"
 
@@ -21,7 +24,7 @@ set origin_dir "."
 set _xil_proj_name_ $project_name
 
 # Create project
-create_project ${_xil_proj_name_} ./${_xil_proj_name_} -part xc7a50ticsg324-1L
+create_project ${_xil_proj_name_} ./${_xil_proj_name_} -part xc7a50ticsg324-1L -force
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -49,7 +52,11 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
+ [file normalize "${src_dir}/vsynth_top.v"] \
  [file normalize "${src_dir}/vsynth_test.v"] \
+ [file normalize "${src_dir}/debouncer_test.v"] \
+ [file normalize "${src_dir}/common/debouncer_pulse.v"] \
+ [file normalize "${src_dir}/common/edge_detector.v"] \
  [file normalize "${src_dir}/midi_test.v"] \
  [file normalize "${src_dir}/uart_rx_test.v"] \
  [file normalize "${src_dir}/common/mux_4_1_hot1.v"] \
@@ -58,6 +65,7 @@ set files [list \
  [file normalize "${src_dir}/common/register.v"] \
  [file normalize "${src_dir}/common/register_clr.v"] \
  [file normalize "${src_dir}/common/up_cnt_mod.v"] \
+ [file normalize "${src_dir}/common/up_cnt_mod_load.v"] \
  [file normalize "${src_dir}/common/shift_reg.v"] \
  [file normalize "${src_dir}/7seg/bcd7seg.v"] \
  [file normalize "${src_dir}/7seg/bin2bcd.v"] \
@@ -68,16 +76,41 @@ set files [list \
  [file normalize "${src_dir}/midi/midi_fsm.v"] \
  [file normalize "${src_dir}/midi/poly_midi.v"] \
  [file normalize "${src_dir}/midi/polyphony.v"] \
+ [file normalize "${src_dir}/midi/cc_decoder.v"] \
  [file normalize "${src_dir}/nco/nco.v"] \
  [file normalize "${src_dir}/nco/nco_bank.v"] \
  [file normalize "${src_dir}/nco/phase2sample.v"] \
- [file normalize "${src_dir}/nco/sample_rom.v"] \
  [file normalize "${src_dir}/nco/step_size_rom.v"] \
+ [file normalize "${src_dir}/nco/step_size_rom.mem"] \
+ [file normalize "${src_dir}/wavetables/sample_rom.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_data_rom.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_offset_rom.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_loader.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_ram.v"] \
+ [file normalize "${src_dir}/wavetables/wtb_synthesis.v"] \
+ [file normalize "${src_dir}/wavetables/wavetable_offset_rom.mem"] \
+ [file normalize "${src_dir}/wavetables/wavetable_data_rom.mem"] \
+ [file normalize "${src_dir}/wavetables/sample_rom.mem"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
+set_property -name "top" -value "vsynth_top" -objects $obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "top" -value "vsynth_top" -objects $obj
+
+# Create 'constrs_1' fileset (if not found)
+if {[string equal [get_filesets -quiet constrs_1] ""]} {
+  create_fileset -constrset constrs_1
+}
+
+# Set 'constrs_1' fileset object
+set obj [get_filesets constrs_1]
+set files [list \
+ [file normalize "${constr_dir}/vsynth_top.xdc"] \
+]
+add_files -norecurse -fileset $obj $files
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
@@ -94,14 +127,18 @@ set files [list \
  [file normalize "${sim_dir}/uart_rx_tb.v"] \
  [file normalize "${sim_dir}/midi_tb.v"] \
  [file normalize "${sim_dir}/poly_midi_module_tb.v"] \
+ [file normalize "${sim_dir}/phase2sample_tb.v"] \
  [file normalize "${sim_dir}/nco_bank_tb.v"] \
  [file normalize "${sim_dir}/shift_reg_tb.v"] \
+ [file normalize "${sim_dir}/wavetable_ram_tb.v"] \
+ [file normalize "${sim_dir}/up_cnt_mod_load_tb.v"] \
+ [file normalize "${sim_dir}/wavetable_loader_tb.v"] \
+ [file normalize "${sim_dir}/wtb_synthesis_tb.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
-set_property -name "top" -value "vsynth_test" -objects $obj
+set_property -name "top" -value "wtb_synthesis_tb" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
-
-set_property -name "top" -value "vsynth_test" -objects $obj
+set_property -name "top" -value "wtb_synthesis_tb" -objects $obj
