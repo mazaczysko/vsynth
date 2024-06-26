@@ -29,10 +29,21 @@ create_project ${_xil_proj_name_} ./${_xil_proj_name_} -part xc7a50ticsg324-1L -
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
 
+
+# Refresh repo and install BSPs
+#xhub::refresh_catalog [xhub::get_xstores xilinx_board_store]
+#xhub::install [xhub::get_xitems digilentinc.com:nexys-a7-50t:part0:1.2]
+
 # Set project properties
 set obj [current_project]
-set_property -name "board_part_repo_paths" -value "[file normalize "$origin_dir/../../../AppData/Roaming/Xilinx/Vivado/2021.2/xhub/board_store/xilinx_board_store"]" -objects $obj
-set_property -name "board_part" -value "digilentinc.com:nexys-a7-50t:part0:1.3" -objects $obj
+set OS [lindex $tcl_platform(os) 0]
+if { $OS == "Windows" } {
+  set_property -name "board_part_repo_paths" -value "[file normalize "~/AppData/Roaming/Xilinx/Vivado/2023.2/xhub/board_store/xilinx_board_store"]" -objects $obj
+} else {
+  set_property -name "board_part_repo_paths" -value "[file normalize "~/.Xilinx/Vivado/2023.2/xhub/board_store/xilinx_board_store"]" -objects $obj
+}
+
+set_property board_part digilentinc.com:nexys-a7-50t:part0:1.2 $obj
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
@@ -91,6 +102,9 @@ set files [list \
  [file normalize "${src_dir}/wavetables/wavetable_offset_rom.mem"] \
  [file normalize "${src_dir}/wavetables/wavetable_data_rom.mem"] \
  [file normalize "${src_dir}/wavetables/sample_rom.mem"] \
+ [file normalize "${src_dir}/adsr/adsr_nco.v"] \
+ [file normalize "${src_dir}/adsr/adsr_nco_step_rom.v"] \
+ [file normalize "${src_dir}/adsr/adsr_nco_step_rom.mem"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -98,7 +112,6 @@ add_files -norecurse -fileset $obj $files
 set obj [get_filesets sources_1]
 set_property -name "top" -value "vsynth_top" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
-set_property -name "top" -value "vsynth_top" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -134,11 +147,11 @@ set files [list \
  [file normalize "${sim_dir}/up_cnt_mod_load_tb.v"] \
  [file normalize "${sim_dir}/wavetable_loader_tb.v"] \
  [file normalize "${sim_dir}/wtb_synthesis_tb.v"] \
+ [file normalize "${sim_dir}/adsr_nco_tb.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
-set_property -name "top" -value "wtb_synthesis_tb" -objects $obj
+set_property -name "top" -value "adsr_nco_tb" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
-set_property -name "top" -value "wtb_synthesis_tb" -objects $obj
