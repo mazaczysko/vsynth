@@ -75,6 +75,7 @@ set files [list \
  [file normalize "${src_dir}/common/prescaler.v"] \
  [file normalize "${src_dir}/common/register.v"] \
  [file normalize "${src_dir}/common/register_clr.v"] \
+ [file normalize "${src_dir}/common/register_set.v"] \
  [file normalize "${src_dir}/common/up_cnt_mod.v"] \
  [file normalize "${src_dir}/common/up_cnt_mod_load.v"] \
  [file normalize "${src_dir}/common/shift_reg.v"] \
