@@ -30,7 +30,7 @@ wire [7:0] wtb_ram_factor_r;
 wire [6:0] nco_phase;
 wire       nco_phase_dv;
 
-wire [15:0] sample_vel;
+wire [14:0] sample_vel;
 wire [7:0]  output_sample;
 
 assign sample_vel = output_sample * note_vel;

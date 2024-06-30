@@ -6,7 +6,7 @@ reg         clk;
 reg         rst;
 reg   [6:0] env_time;
 wire  [6:0] env_scale;
-wire        env_ovflow;
+wire        env_ov;
 wire        env_dv;
 wire        sample_rate;
 
@@ -35,7 +35,7 @@ adsr_nco DUT (
     .sample_rate  ( sample_rate ),
     .env_time     ( env_time    ),   
     .env_scale    ( env_scale   ),
-    .env_ovflow   ( env_ovflow  ),    
+    .env_ov       ( env_ov      ),    
     .env_dv       ( env_dv      )
 );
 

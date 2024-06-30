@@ -4,7 +4,7 @@ module adsr_nco (
     input         sample_rate ,
     input  [6:0]  env_time    ,   
     output [6:0]  env_scale   ,
-    output        env_ovflow  ,    
+    output        env_ov      ,    
     output reg    env_dv
 );
 
@@ -19,12 +19,15 @@ wire [NCO_W-1:0]  phase_reg_out;
 
 assign env_scale  = phase_reg_out[NCO_W-1:NCO_W-7];
 assign phase_add_out = phase_reg_out + step_size;
-assign phase_reg_clr = rst || (env_dv && env_ovflow);
+assign phase_reg_clr = rst || (env_dv && env_ov);
 
-assign env_ovflow = phase_add_out < phase_reg_out; 
+assign env_ov = (phase_add_out < phase_reg_out) && env_dv; 
 
 always @(posedge clk)
-    env_dv <= sample_rate;
+    if (rst)
+        env_dv <= 1'b0;
+    else
+        env_dv <= sample_rate;
 
 register_clr #(
     .W(NCO_W)
