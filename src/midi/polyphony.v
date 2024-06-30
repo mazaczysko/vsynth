@@ -13,7 +13,15 @@ module polyphony (
     output [6:0] note_vel_0,
     output [6:0] note_vel_1,
     output [6:0] note_vel_2,
-    output [6:0] note_vel_3
+    output [6:0] note_vel_3,
+    output gate_on_0,
+    output gate_on_1,
+    output gate_on_2,
+    output gate_on_3,
+    output gate_off_0,
+    output gate_off_1,
+    output gate_off_2,
+    output gate_off_3
 );
 
 reg write_note_0;
@@ -26,6 +34,15 @@ reg clr_note_1;
 reg clr_note_2;
 reg clr_note_3;
 
+assign gate_on_0 = write_note_0;
+assign gate_on_1 = write_note_1;
+assign gate_on_2 = write_note_2;
+assign gate_on_3 = write_note_3;
+
+assign gate_off_0 = clr_note_0;
+assign gate_off_1 = clr_note_1;
+assign gate_off_2 = clr_note_2;
+assign gate_off_3 = clr_note_3;
 
 always @(posedge clk) 
     if(ce)

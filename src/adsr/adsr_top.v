@@ -86,20 +86,22 @@ begin
 end
 
 //env_scale mux
-always @(*)
+always @(posedge clk)
 begin
+    if (sample_rate) begin
     case (adsr_phase)
-        ADSR_A:
-            env_out = nco_out;
-        ADSR_D:
-            env_out = decay_env_out;
-        ADSR_S:
-            env_out = adsr_s;
-        ADSR_R:
-            env_out = release_env_out;
-        default:
-            env_out = 7'd0;
-    endcase
+            ADSR_A:
+                env_out <= nco_out;
+            ADSR_D:
+                env_out <= decay_env_out;
+            ADSR_S:
+                env_out <= adsr_s;
+            ADSR_R:
+                env_out <= release_env_out;
+            default:
+                env_out <= 7'd0;
+        endcase
+    end
 end
 
 

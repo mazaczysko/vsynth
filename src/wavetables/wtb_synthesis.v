@@ -12,6 +12,7 @@ module wtb_synthesis (
     input [6:0] program,
     input [6:0] note_num,
     input [6:0] note_vel,
+    input [6:0] env_scale,
 
     output [7:0] sample_out
 );
@@ -31,10 +32,15 @@ wire [6:0] nco_phase;
 wire       nco_phase_dv;
 
 wire [14:0] sample_vel;
+wire [7:0]  sample_vel_out;
+wire [14:0] sample_env;
 wire [7:0]  output_sample;
 
 assign sample_vel = output_sample * note_vel;
-assign sample_out = sample_vel[14:7];
+assign sample_vel_out = sample_vel[14:7];
+
+assign sample_env = sample_vel_out * env_scale;
+assign sample_out = sample_env[14:7];
 
 
 wavetable_loader wtb_loader_inst (
