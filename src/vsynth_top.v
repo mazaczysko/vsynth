@@ -1,12 +1,13 @@
 module vsynth_top (
-    input 	     clk		 ,
-    input 		 di			 ,
-    input  [3:0] channel	 ,
-    output [3:0] channel_led ,
+    input 	     clk,
+    input        rst,
+    input        di,
+    input  [3:0] channel,
+    output [3:0] channel_led,
 
-    output [7:0] sample_out  ,
+    output [9:0] sample_out ,
     
-    output [7:0] seg         ,
+    output [7:0] seg,
     output [7:0] an
 );
 
@@ -39,7 +40,6 @@ wire [6:0] adsr_s;
 wire [6:0] adsr_r;
 
 wire sample_rate_ceo;
-wire rst;
 
 wire [6:0] note_num [3:0];
 wire [6:0] note_vel [3:0];
@@ -52,17 +52,16 @@ wire [6:0] env_out [3:0];
 wire [7:0] out_sample [3:0];
 
 wire [11:0] sample_sum;
-wire [7:0]  sample_sum_divided_8bit;
-reg  [7:0]  sample_out_reg;
+wire [9:0]  sample_sum_divided_8bit;
+reg  [9:0]  sample_out_reg;
 
 assign channel_led = channel;
 assign an[7:4] = 4'b1111; 
 
 assign sample_sum = out_sample[0] + out_sample[1] + out_sample[2] + out_sample[3];
-assign sample_sum_divided_8bit = sample_sum[9:2]; 
+assign sample_sum_divided_8bit = sample_sum[9:0]; 
 assign sample_out = sample_out_reg; 
 
-assign rst = 1'b0;
 
 uart_rx uart (
     .clk ( clk		),
@@ -100,6 +99,10 @@ polyphony polyphony_inst (
     .note_vel   ( note_vel_m  ),
     .note_on    ( note_on     ),
     .note_off   ( note_off    ),
+    .env_out_0  ( env_out[0]  ),
+    .env_out_1  ( env_out[1]  ),
+    .env_out_2  ( env_out[2]  ),
+    .env_out_3  ( env_out[3]  ),
     .note_num_0 ( note_num[0] ),
     .note_num_1 ( note_num[1] ),
     .note_num_2 ( note_num[2] ),

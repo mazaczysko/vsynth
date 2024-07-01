@@ -39,14 +39,12 @@ wire [6:0] note_num_buf_out;
 wire [6:0] note_vel_buf_out;
 wire [6:0] program_buf_out;
 
-wire [6:0] note_vel_or_off;
 wire [7:0] current_status;
 
 wire fsm_reset;
 wire fsm_dispatch;
 wire fsm_handle_prog;
 wire fsm_handle_note;
-wire fsm_handle_note_nand_note_off;
 wire fsm_recv_num_and_dv;
 wire fsm_recv_vel_and_dv;
 wire fsm_recv_prog_and_dv;
@@ -61,7 +59,6 @@ assign fsm_reset = fsm_state == RESET;
 assign fsm_dispatch = fsm_state == DISPATCH;
 assign fsm_handle_prog = fsm_state == HANDLE_PROG;
 assign fsm_handle_note = fsm_state == HANDLE_NOTE;
-assign fsm_handle_note_nand_note_off = fsm_state == HANDLE_NOTE & ~(current_status == {S_NOTE_OFF, channel});
 assign fsm_recv_num_and_dv = fsm_state == RECV_NUM & dv;
 assign fsm_recv_vel_and_dv = fsm_state == RECV_VEL & dv;
 assign fsm_recv_prog_and_dv = fsm_state == RECV_PROG & dv;

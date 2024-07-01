@@ -6,6 +6,10 @@ module polyphony (
     input [6:0] note_vel,
     input note_on,
     input note_off,
+    input  [6:0] env_out_0,
+    input  [6:0] env_out_1,
+    input  [6:0] env_out_2,
+    input  [6:0] env_out_3,
     output [6:0] note_num_0,
     output [6:0] note_num_1,
     output [6:0] note_num_2,
@@ -13,7 +17,7 @@ module polyphony (
     output [6:0] note_vel_0,
     output [6:0] note_vel_1,
     output [6:0] note_vel_2,
-    output [6:0] note_vel_3,
+    output [6:0] note_vel_3,   
     output gate_on_0,
     output gate_on_1,
     output gate_on_2,
@@ -47,16 +51,16 @@ assign gate_off_3 = clr_note_3;
 always @(posedge clk) 
     if(ce)
         if (note_on)
-            if (~|note_vel_0) ///note_vel_0 == 7'd0;
+            if (~|env_out_0) ///note_vel_0 == 7'd0;
                 write_note_0 <= 1'b1;
 
-            else if(~|note_vel_1)
+            else if(~|env_out_1)
                 write_note_1 <= 1'b1;
 
-            else if(~|note_vel_2)
+            else if(~|env_out_2)
                 write_note_2 <= 1'b1;
 
-            else if(~|note_vel_3)
+            else if(~|env_out_3)
                 write_note_3 <= 1'b1;
             
             else begin
@@ -160,7 +164,7 @@ note_vel_0_reg
 (
     .clk ( clk              ),
     .ce  ( write_note_0     ),
-    .clr ( rst | clr_note_0 ),
+    .clr ( rst              ),
     .d   ( note_vel         ),
     .q   ( note_vel_0       )
 );
@@ -172,7 +176,7 @@ note_vel_1_reg
 (
     .clk ( clk              ),
     .ce  ( write_note_1     ),
-    .clr ( rst | clr_note_1 ),
+    .clr ( rst              ),
     .d   ( note_vel         ),
     .q   ( note_vel_1       )
 );
@@ -184,7 +188,7 @@ note_vel_2_reg
 (
     .clk ( clk              ),
     .ce  ( write_note_2     ),
-    .clr ( rst | clr_note_2 ),
+    .clr ( rst              ),
     .d   ( note_vel         ),
     .q   ( note_vel_2       )
 );
@@ -196,7 +200,7 @@ note_vel_3_reg
 (
     .clk ( clk              ),
     .ce  ( write_note_3     ),
-    .clr ( rst | clr_note_3 ),
+    .clr ( rst              ),
     .d   ( note_vel         ),
     .q   ( note_vel_3       )
 );
