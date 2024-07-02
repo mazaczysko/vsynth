@@ -11,12 +11,12 @@ module uart_rx #(
     output [7:0]    po  
 );
 
-parameter HALF_BAUD = CLKS_PER_BIT/2;
-parameter IDLE = 3'b000;
-parameter START = 3'b001;
-parameter START_CHECK = 3'b010;
-parameter READ = 3'b011;
-parameter STOP = 3'b100;
+localparam HALF_BAUD = CLKS_PER_BIT/2;
+localparam IDLE = 3'b000;
+localparam START = 3'b001;
+localparam START_CHECK = 3'b010;
+localparam READ = 3'b011;
+localparam STOP = 3'b100;
 
 wire [2:0] status;
 wire [CLKS_PER_BIT_W-1:0] baud_cnt;
