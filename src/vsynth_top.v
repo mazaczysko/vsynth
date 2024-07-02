@@ -157,6 +157,7 @@ generate
         if (i == 0) begin
             wtb_synthesis wtb_synthesis_inst (
                 .clk            ( clk             ),
+                .rst            ( rst             ),
                 .sample_rate    ( sample_rate_ceo ),
                 .wtb_load       ( wtb_load        ),
                 .wtb_num        ( wtb_num         ),   
@@ -172,6 +173,7 @@ generate
         else begin
             wtb_synthesis wtb_synthesis_inst (
                 .clk            ( clk             ),
+                .rst            ( rst             ),
                 .sample_rate    ( sample_rate_ceo ),
                 .wtb_load       ( wtb_load        ),
                 .wtb_num        ( wtb_num         ),   

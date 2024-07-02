@@ -5,7 +5,8 @@ module phase2sample (
     input       [7:0] wfm_num_l   ,
     input       [7:0] wfm_num_r   ,
     input       [7:0] factor      , 
-    output reg  [7:0] sample_out 
+    output reg  [7:0] sample_out  ,
+    output reg        sample_out_dv
 );
 
 reg [7:0] factor_reg;
@@ -46,6 +47,9 @@ always @(posedge clk)
 always @(posedge clk)
     if(trig_sample)
         sample_out <= sample_final;
+
+always @(posedge clk)
+    sample_out_dv <= trig_sample;
 
 always @(posedge clk)
     if(nco_phase_dv)

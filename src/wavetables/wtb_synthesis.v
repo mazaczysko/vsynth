@@ -2,6 +2,7 @@
 module wtb_synthesis (
 
     input        clk,
+    input        rst,
     input        sample_rate,
 
     input        wtb_load,
@@ -14,7 +15,8 @@ module wtb_synthesis (
     input [6:0] note_vel,
     input [6:0] env_scale,
 
-    output [7:0] sample_out
+    output [7:0] sample_out,
+    output       sample_out_dv
 );
 
 wire [3:0] wtb_ram_we;
@@ -32,16 +34,45 @@ wire [6:0] nco_phase;
 wire       nco_phase_dv;
 
 wire [14:0] sample_vel;
+wire        sample_vel_dv;
+
 wire [7:0]  sample_vel_out;
 wire [14:0] sample_env;
-wire [7:0]  output_sample;
 
-assign sample_vel = output_sample * note_vel;
-assign sample_vel_out = sample_vel[14:7];
+wire [7:0] phase_sample;
+wire       phase_sample_dv;
 
-assign sample_env = sample_vel_out * env_scale;
 assign sample_out = sample_env[14:7];
 
+simple_mul #(
+    .WIDTH_A (8),
+    .WIDTH_B (7)
+)
+sample_note_vel_mul
+(
+    .clk    ( clk             ),
+    .rst    ( rst             ),
+    .ce     ( phase_sample_dv ),
+    .a      ( phase_sample    ),
+    .b      ( note_vel        ),
+    .res    ( sample_vel      ),
+    .res_dv ( sample_vel_dv   )
+);
+
+simple_mul #(
+    .WIDTH_A (8),
+    .WIDTH_B (7)
+)
+sample_env_vel_mul
+(
+    .clk    ( clk              ),
+    .rst    ( rst              ),
+    .ce     ( sample_vel_dv    ),
+    .a      ( sample_vel[14:7] ),
+    .b      ( env_scale        ),
+    .res    ( sample_env       ),
+    .res_dv ( sample_env_dv    )
+);
 
 wavetable_loader wtb_loader_inst (
     .clk                    ( clk               ),
@@ -83,13 +114,14 @@ nco nco_inst (
 );
 
 phase2sample phase2sample_inst ( 
-    .clk         ( clk              ),
-    .nco_phase_dv( nco_phase_dv     ),
-    .nco_phase   ( nco_phase        ),
-    .wfm_num_l   ( wtb_ram_wfm_l_r  ),
-    .wfm_num_r   ( wtb_ram_wfm_r_r  ),
-    .factor      ( wtb_ram_factor_r ), 
-    .sample_out  ( output_sample    )
+    .clk           ( clk              ),
+    .nco_phase_dv  ( nco_phase_dv     ),
+    .nco_phase     ( nco_phase        ),
+    .wfm_num_l     ( wtb_ram_wfm_l_r  ),
+    .wfm_num_r     ( wtb_ram_wfm_r_r  ),
+    .factor        ( wtb_ram_factor_r ), 
+    .sample_out    ( phase_sample     ),
+    .sample_out_dv ( phase_sample_dv  )
 );
 
 endmodule
