@@ -27,6 +27,8 @@ wire fsm_load_pure_l;
 wire fsm_load_pure_r;
 wire fsm_fill_factors;
 wire fsm_read_wtb_data;
+wire fsm_read_wtb_data_l;
+wire fsm_read_wtb_data_r;
 wire fsm_done;
 
 wire                      wtb_data_addr_cnt_ce;
@@ -63,6 +65,7 @@ wire [15:0] factor_16bit;
 wire  [7:0] factor;
 
 assign fsm_idle_and_wtb_load = fsm_idle & wtb_load;
+assign fsm_read_wtb_data = fsm_read_wtb_data_l | fsm_read_wtb_data_r;
 
 //Skip first byte of wtb_data (wavetable number)
 assign wtb_offset = wtb_offset_rom_out + 8'b1;
@@ -70,7 +73,7 @@ assign wtb_offset = wtb_offset_rom_out + 8'b1;
 assign wtb_data_addr_wfm = wtb_data_addr_cnt_out;
 assign wtb_data_addr_pos = wtb_data_addr_cnt_out + 1'b1;
 
-assign wtb_data_addr_cnt_ce = fsm_read_wtb_data || fsm_load_pure_r;
+assign wtb_data_addr_cnt_ce = fsm_read_wtb_data_l | fsm_load_pure_l;
 assign wtb_ram_addr_cnt_ce = fsm_fill_factors;
 
 assign wtb_ram_addr_cnt_ld_data = fsm_idle_and_wtb_load ? {WTB_RAM_SIZE_W{1'd0}} : wtb_data_pos;
@@ -220,18 +223,19 @@ wtb_loader_fsm #(
 )
 wtb_loader_fsm_inst
 (
-    .clk                ( clk                ),
-    .rst                ( rst                ),
-    .wtb_load           ( wtb_load           ),
-    .wtb_ram_addr_w     ( wtb_ram_addr_w     ),
-    .pure_r_pos_reg_out ( pure_r_pos_reg_out ),
-    .fsm_idle           ( fsm_idle           ),
-    .fsm_load_offset    ( fsm_load_offset    ),
-    .fsm_load_pure_l    ( fsm_load_pure_l    ),
-    .fsm_load_pure_r    ( fsm_load_pure_r    ),
-    .fsm_fill_factors   ( fsm_fill_factors   ),
-    .fsm_read_wtb_data  ( fsm_read_wtb_data  ),
-    .fsm_done           ( fsm_done           )
+    .clk                  ( clk                ),
+    .rst                  ( rst                ),
+    .wtb_load             ( wtb_load           ),
+    .wtb_ram_addr_w       ( wtb_ram_addr_w     ),
+    .pure_r_pos_reg_out   ( pure_r_pos_reg_out ),
+    .fsm_idle             ( fsm_idle           ),
+    .fsm_load_offset      ( fsm_load_offset    ),
+    .fsm_load_pure_l      ( fsm_load_pure_l    ),
+    .fsm_load_pure_r      ( fsm_load_pure_r    ),
+    .fsm_fill_factors     ( fsm_fill_factors   ),
+    .fsm_read_wtb_data_l  ( fsm_read_wtb_data_l  ),
+    .fsm_read_wtb_data_r  ( fsm_read_wtb_data_r  ),
+    .fsm_done             ( fsm_done           )
 );
 
 

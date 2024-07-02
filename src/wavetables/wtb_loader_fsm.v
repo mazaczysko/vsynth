@@ -12,20 +12,21 @@ module wtb_loader_fsm #(
     output reg  fsm_load_pure_l,
     output reg  fsm_load_pure_r,
     output reg  fsm_fill_factors,
-    output reg  fsm_read_wtb_data,
+    output reg  fsm_read_wtb_data_l,
+    output reg  fsm_read_wtb_data_r,
     output reg  fsm_done
 );
 
 
 //FSM States
-parameter IDLE  = 3'd0;
-parameter LOAD_OFFSET = 3'd1;
-parameter READ_WTB_DATA_L = 3'd2;
-parameter LOAD_PURE_L = 3'd3; 
-parameter READ_WTB_DATA_R = 3'd4;
-parameter LOAD_PURE_R = 3'd5;
-parameter FILL_FACTORS = 3'd6;
-parameter DONE = 3'd7;
+localparam IDLE  = 3'd0;
+localparam LOAD_OFFSET = 3'd1;
+localparam READ_WTB_DATA_L = 3'd2;
+localparam LOAD_PURE_L = 3'd3; 
+localparam READ_WTB_DATA_R = 3'd4;
+localparam LOAD_PURE_R = 3'd5;
+localparam FILL_FACTORS = 3'd6;
+localparam DONE = 3'd7;
 
 reg [2:0] fsm_state;
 reg [2:0] fsm_next;
@@ -46,7 +47,8 @@ begin
     fsm_load_pure_l = 1'b0;
     fsm_load_pure_r = 1'b0;
     fsm_fill_factors = 1'b0;
-    fsm_read_wtb_data = 1'b0;
+    fsm_read_wtb_data_l = 1'b0;
+    fsm_read_wtb_data_r = 1'b0;
     fsm_done = 1'b0;
 
     case (fsm_state)
@@ -64,7 +66,7 @@ begin
         end
 
         READ_WTB_DATA_L: begin
-            fsm_read_wtb_data = 1'b1;
+            fsm_read_wtb_data_l = 1'b1;
             fsm_next = LOAD_PURE_L;
         end
 
@@ -74,7 +76,7 @@ begin
         end
 
         READ_WTB_DATA_R: begin
-            fsm_read_wtb_data = 1'b1;
+            fsm_read_wtb_data_r = 1'b1;
             fsm_next = LOAD_PURE_R;
         end
 
@@ -106,7 +108,8 @@ begin
             fsm_load_pure_l = 1'b0;
             fsm_load_pure_r = 1'b0;
             fsm_fill_factors = 1'b0;
-            fsm_read_wtb_data = 1'b0;
+            fsm_read_wtb_data_l = 1'b0;
+            fsm_read_wtb_data_r = 1'b0;
             fsm_done = 1'b0;
 
             fsm_next = IDLE;
