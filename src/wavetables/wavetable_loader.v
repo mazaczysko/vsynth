@@ -1,5 +1,6 @@
 module wavetable_loader (
     input         clk               ,
+    input         rst               ,
     input   [4:0] wtb_num           ,
     input         wtb_load          ,
     input   [1:0] voice_num         ,
@@ -18,18 +19,6 @@ localparam WTB_ROM_SIZE_W = 10;
 
 localparam WTB_RAM_SIZE   = 61;
 localparam WTB_RAM_SIZE_W = 6;
-
-//FSM States
-parameter IDLE  = 3'd0;
-parameter LOAD_OFFSET = 3'd1;
-parameter READ_WTB_DATA_L = 3'd2;
-parameter LOAD_PURE_L = 3'd3; 
-parameter READ_WTB_DATA_R = 3'd4;
-parameter LOAD_PURE_R = 3'd5;
-parameter FILL_FACTORS = 3'd6;
-parameter DONE = 3'd7;
-
-reg [2:0] fsm_state = IDLE;
 
 wire fsm_idle;
 wire fsm_idle_and_wtb_load;
@@ -73,14 +62,7 @@ wire [15:0] distance_normalized;
 wire [15:0] factor_16bit;
 wire  [7:0] factor;
 
-assign fsm_idle = fsm_state == IDLE;
-assign fsm_idle_and_wtb_load = fsm_state == IDLE & wtb_load;
-assign fsm_load_offset = fsm_state == LOAD_OFFSET;
-assign fsm_load_pure_l = fsm_state == LOAD_PURE_L;
-assign fsm_load_pure_r = fsm_state == LOAD_PURE_R;
-assign fsm_fill_factors = fsm_state == FILL_FACTORS;
-assign fsm_read_wtb_data = fsm_state == READ_WTB_DATA_L | fsm_state == READ_WTB_DATA_R;
-assign fsm_done = fsm_state == DONE;
+assign fsm_idle_and_wtb_load = fsm_idle & wtb_load;
 
 //Skip first byte of wtb_data (wavetable number)
 assign wtb_offset = wtb_offset_rom_out + 8'b1;
@@ -88,8 +70,8 @@ assign wtb_offset = wtb_offset_rom_out + 8'b1;
 assign wtb_data_addr_wfm = wtb_data_addr_cnt_out;
 assign wtb_data_addr_pos = wtb_data_addr_cnt_out + 1'b1;
 
-assign wtb_data_addr_cnt_ce = fsm_state == READ_WTB_DATA_L | fsm_state == LOAD_PURE_L | READ_WTB_DATA_R;
-assign wtb_ram_addr_cnt_ce = fsm_state == FILL_FACTORS;
+assign wtb_data_addr_cnt_ce = fsm_read_wtb_data || fsm_load_pure_r;
+assign wtb_ram_addr_cnt_ce = fsm_fill_factors;
 
 assign wtb_ram_addr_cnt_ld_data = fsm_idle_and_wtb_load ? {WTB_RAM_SIZE_W{1'd0}} : wtb_data_pos;
 assign wtb_ram_addr_cnt_load = fsm_idle_and_wtb_load | fsm_load_pure_l;
@@ -100,7 +82,7 @@ assign distance_normalized = 16'hffff / distance_btwn_pure_waves;
 assign factor_16bit = distance_normalized * distance_to_left_pure;
 assign factor = factor_16bit[15:8];
 
-assign wtb_ram_write_enable = fsm_state == FILL_FACTORS;
+assign wtb_ram_write_enable = fsm_fill_factors;
 
 //Output definitions
 assign wtb_ram_addr_w  = wtb_ram_addr_cnt_out;
@@ -232,49 +214,26 @@ wavetable_data_rom wtb_data_rom_inst
 );
 
 
-//WAVETABLE LOADER FSM
-always @(posedge clk)
-begin
-    case (fsm_state)
-        IDLE:
-            if (!wtb_load)
-                fsm_state <= IDLE;
-            else
-                fsm_state <= LOAD_OFFSET;
+wtb_loader_fsm #(
+    .WTB_RAM_SIZE (WTB_RAM_SIZE)
 
-        LOAD_OFFSET:
-            fsm_state <= READ_WTB_DATA_L;
-        
-        READ_WTB_DATA_L:
-            fsm_state <= LOAD_PURE_L;
+)
+wtb_loader_fsm_inst
+(
+    .clk                ( clk                ),
+    .rst                ( rst                ),
+    .wtb_load           ( wtb_load           ),
+    .wtb_ram_addr_w     ( wtb_ram_addr_w     ),
+    .pure_r_pos_reg_out ( pure_r_pos_reg_out ),
+    .fsm_idle           ( fsm_idle           ),
+    .fsm_load_offset    ( fsm_load_offset    ),
+    .fsm_load_pure_l    ( fsm_load_pure_l    ),
+    .fsm_load_pure_r    ( fsm_load_pure_r    ),
+    .fsm_fill_factors   ( fsm_fill_factors   ),
+    .fsm_read_wtb_data  ( fsm_read_wtb_data  ),
+    .fsm_done           ( fsm_done           )
+);
 
-        LOAD_PURE_L:
-            fsm_state <= READ_WTB_DATA_R;
-        
-        READ_WTB_DATA_R:
-            fsm_state <= LOAD_PURE_R;
-
-        LOAD_PURE_R:
-            fsm_state <= FILL_FACTORS;
-
-        FILL_FACTORS:
-            if (wtb_ram_addr_w == WTB_RAM_SIZE-1)
-                fsm_state <= DONE; 
-            else begin
-                if (wtb_ram_addr_w == pure_r_pos_reg_out)
-                    fsm_state <= READ_WTB_DATA_L;
-                else
-                    fsm_state <= FILL_FACTORS;
-            end
-                  
-        DONE:
-            fsm_state <= IDLE;
-
-        default:
-            fsm_state <= IDLE;
-
-    endcase
-end
 
 
 endmodule

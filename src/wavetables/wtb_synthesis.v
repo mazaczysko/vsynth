@@ -43,6 +43,7 @@ wire [7:0] phase_sample;
 wire       phase_sample_dv;
 
 assign sample_out = sample_env[14:7];
+assign sample_out_dv = sample_env_dv;
 
 simple_mul #(
     .WIDTH_A (8),
@@ -76,6 +77,7 @@ sample_env_vel_mul
 
 wavetable_loader wtb_loader_inst (
     .clk                    ( clk               ),
+    .rst                    ( rst               ),
     .wtb_num                ( wtb_num           ),
     .wtb_load               ( wtb_load          ),
     .voice_num              ( 2'd0              ),
