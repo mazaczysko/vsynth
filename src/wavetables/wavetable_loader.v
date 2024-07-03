@@ -4,14 +4,14 @@ module wavetable_loader (
     input   [4:0] wtb_num           ,
     input         wtb_load          ,
     input   [1:0] voice_num         ,
-    output  [3:0] wtb_ram_we        ,
-    output  [5:0] wtb_ram_addr_w    ,
-    output  [7:0] wtb_ram_wfm_l_w   ,
-    output  [7:0] wtb_ram_wfm_r_w   ,
-    output  [7:0] wtb_ram_factor_w  ,
-    output  [4:0] done_wtb_num      ,
-    output        done              ,     
-    output        idle              
+    output reg [3:0] wtb_ram_we        ,
+    output reg [5:0] wtb_ram_addr_w    ,
+    output reg [7:0] wtb_ram_wfm_l_w   ,
+    output reg [7:0] wtb_ram_wfm_r_w   ,
+    output reg [7:0] wtb_ram_factor_w  ,
+    output reg [4:0] done_wtb_num      ,
+    output reg       done              ,     
+    output reg       idle              
 );
 
 localparam WTB_ROM_SIZE   = 641;
@@ -59,10 +59,13 @@ wire [7:0] pure_r_wfm_reg_out;
 wire [7:0] pure_r_pos_reg_out;
 
 wire  [7:0] distance_btwn_pure_waves;
-wire  [7:0] distance_to_left_pure;
+reg   [7:0] distance_to_left_pure;
 wire [15:0] distance_normalized;
 wire [15:0] factor_16bit;
 wire  [7:0] factor;
+
+wire [7:0] wtb_ram_wfm_l_w_c;
+wire [7:0] wtb_ram_wfm_r_w_c;
 
 assign fsm_idle_and_wtb_load = fsm_idle & wtb_load;
 assign fsm_read_wtb_data = fsm_read_wtb_data_l | fsm_read_wtb_data_r;
@@ -80,24 +83,38 @@ assign wtb_ram_addr_cnt_ld_data = fsm_idle_and_wtb_load ? {WTB_RAM_SIZE_W{1'd0}}
 assign wtb_ram_addr_cnt_load = fsm_idle_and_wtb_load | fsm_load_pure_l;
 
 assign distance_btwn_pure_waves = pure_r_pos_reg_out - pure_l_pos_reg_out;
-assign distance_to_left_pure = wtb_ram_addr_w - pure_l_pos_reg_out;
-assign distance_normalized = 16'hffff / distance_btwn_pure_waves;
+
 assign factor_16bit = distance_normalized * distance_to_left_pure;
 assign factor = factor_16bit[15:8];
 
 assign wtb_ram_write_enable = fsm_fill_factors;
 
-//Output definitions
-assign wtb_ram_addr_w  = wtb_ram_addr_cnt_out;
-assign wtb_ram_wfm_l_w = (wtb_ram_addr_w == pure_r_pos_reg_out ? pure_r_wfm_reg_out : pure_l_wfm_reg_out); 
-assign wtb_ram_wfm_r_w = (wtb_ram_addr_w == pure_l_pos_reg_out ? pure_l_wfm_reg_out : pure_r_wfm_reg_out);
-assign wtb_ram_factor_w = fsm_fill_factors ? (wtb_ram_wfm_l_w == wtb_ram_wfm_r_w ? 8'h00 : factor) : 8'h00;
-assign wtb_ram_we = voice_num_reg_out[1] ? (voice_num_reg_out[0] ? {wtb_ram_write_enable, 3'b000} : {1'b0, wtb_ram_write_enable, 2'b00}) 
-                                         : (voice_num_reg_out[0] ? {2'b00, wtb_ram_write_enable, 1'b0} : {3'b000, wtb_ram_write_enable});  
+assign wtb_ram_wfm_l_w_c = (wtb_ram_addr_cnt_out == pure_r_pos_reg_out ? pure_r_wfm_reg_out : pure_l_wfm_reg_out); 
+assign wtb_ram_wfm_r_w_c = (wtb_ram_addr_cnt_out == pure_l_pos_reg_out ? pure_l_wfm_reg_out : pure_r_wfm_reg_out);
 
-assign done_wtb_num = wtb_num_reg_out;
-assign done = fsm_done;
-assign idle = fsm_idle;
+//Output definitions
+always @(posedge clk)
+begin
+    wtb_ram_addr_w  <= wtb_ram_addr_cnt_out;
+    wtb_ram_wfm_l_w <= wtb_ram_wfm_l_w_c;
+    wtb_ram_wfm_r_w <= wtb_ram_wfm_r_w_c;
+    wtb_ram_factor_w <= fsm_fill_factors ? (wtb_ram_wfm_l_w_c == wtb_ram_wfm_r_w_c ? 8'h00 : factor) : 8'h00;
+    wtb_ram_we <= voice_num_reg_out[1] ? (voice_num_reg_out[0] ? {wtb_ram_write_enable, 3'b000} : {1'b0, wtb_ram_write_enable, 2'b00}) 
+                                            : (voice_num_reg_out[0] ? {2'b00, wtb_ram_write_enable, 1'b0} : {3'b000, wtb_ram_write_enable});  
+    done_wtb_num <= wtb_num_reg_out;
+    done <= fsm_done;
+    idle <= fsm_idle;
+end
+
+normalized_distance_rom normalized_distance_rom_inst(
+    .clk  ( clk                      ),
+    .re   ( 1'b1                     ),
+    .addr ( distance_btwn_pure_waves ),
+    .data ( distance_normalized      )
+);
+
+always @(posedge clk)
+    distance_to_left_pure <= wtb_ram_addr_cnt_out - pure_l_pos_reg_out;
 
 register #(
     .W(5)
@@ -223,19 +240,19 @@ wtb_loader_fsm #(
 )
 wtb_loader_fsm_inst
 (
-    .clk                  ( clk                ),
-    .rst                  ( rst                ),
-    .wtb_load             ( wtb_load           ),
-    .wtb_ram_addr_w       ( wtb_ram_addr_w     ),
-    .pure_r_pos_reg_out   ( pure_r_pos_reg_out ),
-    .fsm_idle             ( fsm_idle           ),
-    .fsm_load_offset      ( fsm_load_offset    ),
-    .fsm_load_pure_l      ( fsm_load_pure_l    ),
-    .fsm_load_pure_r      ( fsm_load_pure_r    ),
-    .fsm_fill_factors     ( fsm_fill_factors   ),
+    .clk                  ( clk                  ),
+    .rst                  ( rst                  ),
+    .wtb_load             ( wtb_load             ),
+    .wtb_ram_addr_w       ( wtb_ram_addr_cnt_out ),
+    .pure_r_pos_reg_out   ( pure_r_pos_reg_out   ),
+    .fsm_idle             ( fsm_idle             ),
+    .fsm_load_offset      ( fsm_load_offset      ),
+    .fsm_load_pure_l      ( fsm_load_pure_l      ),
+    .fsm_load_pure_r      ( fsm_load_pure_r      ),
+    .fsm_fill_factors     ( fsm_fill_factors     ),
     .fsm_read_wtb_data_l  ( fsm_read_wtb_data_l  ),
     .fsm_read_wtb_data_r  ( fsm_read_wtb_data_r  ),
-    .fsm_done             ( fsm_done           )
+    .fsm_done             ( fsm_done             )
 );
 
 

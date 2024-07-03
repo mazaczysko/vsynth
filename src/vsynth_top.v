@@ -48,6 +48,7 @@ wire [6:0] note_vel [3:0];
 wire gate_on  [3:0]; 
 wire gate_off [3:0];
 wire [6:0] env_out [3:0];
+reg  [6:0] env_out_r [3:0];
 
 wire [7:0] out_sample [3:0];
 
@@ -99,10 +100,10 @@ polyphony polyphony_inst (
     .note_vel   ( note_vel_m  ),
     .note_on    ( note_on     ),
     .note_off   ( note_off    ),
-    .env_out_0  ( env_out[0]  ),
-    .env_out_1  ( env_out[1]  ),
-    .env_out_2  ( env_out[2]  ),
-    .env_out_3  ( env_out[3]  ),
+    .env_out_0  ( env_out_r[0]),
+    .env_out_1  ( env_out_r[1]),
+    .env_out_2  ( env_out_r[2]),
+    .env_out_3  ( env_out_r[3]),
     .note_num_0 ( note_num[0] ),
     .note_num_1 ( note_num[1] ),
     .note_num_2 ( note_num[2] ),
@@ -210,6 +211,17 @@ generate
         );
     end
 endgenerate
+
+genvar k;
+generate 
+    for (k = 0; k < VOICE_NUM; k = k+1)
+    begin
+        (* keep = "true" *)
+        always @(posedge clk)
+            env_out_r[k] <= env_out[k];
+    end
+endgenerate
+
 
 
 always @(posedge clk)

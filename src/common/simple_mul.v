@@ -1,4 +1,4 @@
-module simple_mul #(
+(* use_dsp = "yes" *) module simple_mul #(
     parameter WIDTH_A = 8,
     parameter WIDTH_B = 8
 )
